@@ -1,0 +1,15 @@
+# common values for the childs
+global:
+  registry: appscode
+  image: postgres-stash
+  
+  # optional argument to send pgdump or psql command
+  backup:
+    pgArgs: ""
+  restore:
+    pgArgs: ""
+
+  # default values for prometheus metrics
+  metrics:
+    enabled: true
+    labels: []

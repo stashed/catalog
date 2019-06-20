@@ -7,28 +7,65 @@
 
 ## Installation
 
-At first, add AppsCode chart repository and run `helm repo update`.
+You can install all the catalogs using `stash-catalog` chart or a specific catalog using respective catalog chart.
+
+### Chart
+
+Add AppsCode chart repository in helm repo list:
 
 ```console
+# add appcode repository to helm repo list
 helm repo add appscode https://charts.appscode.com/stable/
+
+# update repo info
 helm repo update
 ```
 
-Now, install desired catalog by flollowing the instruction give below.
-
-### Install `postgres-catalog`
+**Install all Catalogs:**
 
 ```console
-helm install appscode/postgres-catalog --name postgres-catalog
+helm install appscode/stash-catalog --name=stash-catalog
 ```
 
-View configurable parameters for **postgres-catalog** chart in `values.yaml` file at `chart/postgres-catalog/` directory of [stashed/catalog](https://github.com/stashed/catalog) repository.
+**Install only specific catalog:**
 
->In order to install all the catalog simultaneously, please follow the guide [here](https://github.com/stashed/installer/tree/master/chart/stash-catalog).
+```console
+# install only Functions and Tasks for PostgreSQL
+helm install appscode/postgres-catalog --name=postgres-catalog
+
+# install only Functions and Tasks for MongoDB
+helm install appscode/mongo-catalog --name=mongo-catalog
+```
+
+>Check available configurable options by `helm inspect appscode/stash-catalog`.
+
+### Script
+
+```console
+# install all catalog
+curl -fsSL https://github.com/stashed/catalog/raw/master/deploy/setup.sh | bash
+
+# install specific catalog
+curl -fsSL https://github.com/stashed/catalog/raw/master/deploy/setup.sh | bash -s -- --catalog=postgres
+```
+
+## Uninstall
+
+**Chart:**
+
+```console
+helm delete stash-catalog
+```
+
+**Script:**
+
+```console
+curl -fsSL https://github.com/stashed/catalog/raw/master/deploy/setup.sh | bash -s -- --uninstall
+```
 
 ## Test Chart Locally
 
-In order to check the charts locally, we will deploy a chart server locally.
+In order to check the charts locally, deploy a chart server locally.
 
 **Deploy a Local Chart Repo:**
 
@@ -51,11 +88,11 @@ An example of publishing `postgres-stash` chart for [stashed/postgres](https://g
 
 ```console
 helm package chart/postgres-stash
-mv ./postgres-stash-11.tgz $HOME/local-repo/
+mv ./postgres-stash-11.2.tgz $HOME/local-repo/
 helm repo index $HOME/local-repo/
 ```
 
-Run the commands at the root of the respetive repository.
+Run the above commands at the root of the respetive repository.
 
 **Use Chart:**
 
@@ -64,10 +101,10 @@ $ helm repo add appscode http://localhost:8080
 "appscode" has been added to your repositories
 
 # update dependency of the parent chart
-$ helm dependency update chart/postgres-catalog/
+$ helm dependency update chart/stash-catalog/
 
-# install postgres-catalog chart
-$ helm install chart/postgres-catalog --name=postgres-catalog
+# install stash-catalog chart
+$ helm install chart/stash-catalog --name=stash-catalog
 ```
 
 >**Warning:** Repository name must be `appscode`. Otherwise, parent chart will fail to discover the dependencies.

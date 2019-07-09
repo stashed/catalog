@@ -116,22 +116,22 @@ function catalog_version_supported() {
 trap cleanup EXIT
 
 show_help() {
-    echo "setup.sh - install stash-catalog for stash"
+    echo "setup.sh - install catalog for stash"
     echo " "
     echo "setup.sh [options]"
     echo " "
     echo "options:"
     echo "-h, --help                             show brief help"
-    echo "    --catalog                          specify specific catalog variant to install"
-    echo "    --version                          specify specific catalog version to install"
-    echo "    --docker-registry                  docker registry used to pull postgres-stash images (default: appscode)"
-    echo "    --image-tag                        specify tag of the docker image to use for a specific catalog"
-    echo "    --image                            specify name of the docker image to use for a specific catalog"
-    echo "    --metrics-enabled                  specify whether to send prometheus metrics during backup or restore (default: true)"
-    echo "    --metrics-labels                   labels to apply to prometheus metrics for backup or restore process (format: k1=v1,k2=v2)"
-    echo "    --pg-backup-args                   optional arguments to pass to pgdump command during backup"
-    echo "    --pg-restore-args                  optional arguments to pass to psql command during restore"
-    echo "    --uninstall                        uninstall postgres-stash catalog"
+    echo "    --catalog                          specify a specific catalog variant to install."
+    echo "    --version                          specify a specific version of a specific catalog to install. use it along with '--catalog' flag."
+    echo "    --docker-registry                  specify the docker registry to use to pull respective catalog images. default value: 'appscode'.   "
+    echo "    --image                            specify the name of the docker image to use for respective catalogs."
+    echo "    --image-tag                        specify the tag of the docker image to use for respective catalog."
+    echo "    --metrics-enabled                  specify whether to send prometheus metrics after a backup or restore session. default value: 'true'."
+    echo "    --metrics-labels                   specify the labels to apply to the prometheus metrics sent for a backup or restore process. format: '--metrics-labels=\"k1=v1\,k2=v2\" '."
+    echo "    --pg-backup-args                   specify optional arguments to pass to 'pgdump' command during backup."
+    echo "    --pg-restore-args                  specify optional arguments to pass to 'psql' command during  restore."
+    echo "    --uninstall                        uninstall specific or all catalogs."
 }
 
 while test $# -gt 0; do

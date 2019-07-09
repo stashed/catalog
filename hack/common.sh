@@ -11,12 +11,14 @@ DOWNLOAD_DIR=""
 TEMP_DIRS=()
 
 HELM=""
-CHART_LOCATION="chart"
+HELM_VALUES=()
 
 CATALOG_VARIANT="all"
 CATALOG_VERSION=""
 
 APPSCODE_ENV=${APPSCODE_ENV:-prod}
+APPSCODE_CHART_REGISTRY=${APPSCODE_CHART_REGISTRY:-"appscode"}
+APPSCODE_CHART_REGISTRY_URL=${APPSCODE_CHART_REGISTRY_URL:-"https://charts.appscode.com/stable"}
 
 DOCKER_REGISTRY=${REGISTRY:-appscode}
 DOCKER_IMAGE=""
@@ -80,7 +82,7 @@ function downloadFile() {
     fi
 }
 
-array_contains() {
+function array_contains() {
     local array="$1[@]"
     local seeking=$2
     local in=1
@@ -93,7 +95,7 @@ array_contains() {
     return $in
 }
 
-catalog_version_supported() {
+function catalog_version_supported() {
     local catalog_variant=$1
     local version=$2
 
@@ -104,6 +106,9 @@ catalog_version_supported() {
         else
             return 1
         fi
+        ;;
+    *)
+        return 1
         ;;
     esac
 }
@@ -176,7 +181,7 @@ while test $# -gt 0; do
         PG_RESTORE_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
         shift
         ;;
-    --uninstall)
+    --uninstall*)
         UNINSTALL=1
         shift
         ;;
@@ -194,6 +199,8 @@ if [[ $CATALOG_VARIANT != "all" ]]; then
     if ! array_contains CATALOGS $CATALOG_VARIANT; then
         echo "Catalog $CATALOG_VARIANT is not supported"
         exit 1
+    else
+        CATALOGS=($CATALOG_VARIANT)
     fi
 fi
 
@@ -201,6 +208,7 @@ fi
 if [[ $CATALOG_VERSION != "" ]]; then
     if ! catalog_version_supported $CATALOG_VARIANT $CATALOG_VERSION; then
         echo "Catalog $CATALOG_VARIANT does not have version $CATALOG_VERSION"
+        exit 1
     fi
 fi
 
@@ -229,4 +237,34 @@ else
     tar xf ${DOWNLOAD_DIR}/${HELM_DIST} -C ${DOWNLOAD_DIR}
     HELM=${DOWNLOAD_DIR}/${OS}-${ARCH}/${HELM_BIN}
     chmod +x $HELM
+fi
+
+# generate values flags with provided input
+# ========== common values =================
+if [[ $DOCKER_REGISTRY != "" ]]; then
+    HELM_VALUES+=("--set docker.registry=$DOCKER_REGISTRY")
+fi
+
+if [[ $DOCKER_IMAGE != "" ]]; then
+    HELM_VALUES+=("--set docker.image=$DOCKER_IMAGE")
+fi
+
+if [[ $DOCKER_TAG != "" ]]; then
+    HELM_VALUES+=("--set docker.tag=$DOCKER_TAG")
+fi
+
+if [[ $ENABLE_PROMETHEUS_METRICS == "false" ]]; then
+    HELM_VALUES+=("--set metrics.enabled=$ENABLE_PROMETHEUS_METRICS")
+fi
+
+if [[ $METRICS_LABELS != "" ]]; then
+    HELM_VALUES+=("--set metrics.labels='$METRICS_LABELS'")
+fi
+
+# ========== catalog specific values =================
+if [[ $PG_BACKUP_ARGS != "" ]]; then
+    HELM_VALUES+=("--set backup.pgArgs=$PG_BACKUP_ARGS")
+fi
+if [[ $PG_RESTORE_ARGS != "" ]]; then
+    HELM_VALUES+=("--set restore.pgArgs=$PG_RESTORE_ARGS")
 fi

@@ -1,36 +1,74 @@
 #!/bin/bash
 set -eou pipefail
 
-source ./common.sh
+GOPATH=$(go env GOPATH)
+REPO_ROOT=$GOPATH/src/stash.appscode.dev/catalog
 
-if [[ "$APPSCODE_ENV" == "dev" ]]; then
-  CHART_LOCATION="chart"
-else
-  # download chart from remove repository and extract into a temporary directory
-  CHART_LOCATION="$(mktemp -dt appscode-XXXXXX)"
-  TEMP_DIRS+=(${CHART_LOCATION})
-  TEMP_INSTALLER_REPO="${CHART_NAME}-installer"
-  $HELM repo add "${TEMP_INSTALLER_REPO}" "https://charts.appscode.com/stable"
-  $HELM fetch --untar --untardir ${CHART_LOCATION} "${TEMP_INSTALLER_REPO}/${CHART_NAME}"
-  $HELM repo remove "${TEMP_INSTALLER_REPO}"
-fi
+source "$REPO_ROOT/hack/common.sh"
 
-if [ "$UNINSTALL" -eq 1 ]; then
-  $HELM template ${CHART_LOCATION}/${CHART_NAME} \
-  | kubectl delete -f -
-  
-  echo " "
-  echo "Successfully uninstalled ${CHART_NAME}"
-else
-# render the helm template and apply the resulting YAML
-$HELM template ${CHART_LOCATION}/${CHART_NAME} \
-  --set global.registry=${DOCKER_REGISTRY} \
-  --set global.backup.pgArgs=${PG_BACKUP_ARGS} \
-  --set global.restore.pgArgs=${PG_RESTORE_ARGS} \
-  --set global.metrics.enabled=${ENABLE_PROMETHEUS_METRICS} \
-  --set global.metrics.labels=${METRICS_LABELS} \
-| kubectl apply -f -
+# create a temporary directory to store charts files
+TEMP_CHART_DIR="$(mktemp -dt appscode-XXXXXX)"
+TEMP_DIRS+=(${TEMP_CHART_DIR})
 
-echo " "
-echo "Successfully installed ${CHART_NAME}"
-fi
+# Add AppsCode chart registry
+$HELM repo add "${APPSCODE_CHART_REGISTRY}" "${APPSCODE_CHART_REGISTRY_URL}"
+$HELM repo update
+
+function install_catalog() {
+  local catalog="$1"
+  local version="$2"
+
+  # render template then pipe to "kubectl apply" command
+  $HELM template "${TEMP_CHART_DIR}"/"${catalog}" ${HELM_VALUES[@]} |
+    kubectl apply -f -
+}
+
+function uninstall_catalog() {
+  local catalog="$1"
+  local version="$2"
+
+  # render template then pipe to "kubectl delete" command
+  $HELM template "${TEMP_CHART_DIR}"/"${catalog}" |
+    kubectl delete -f -
+}
+
+function handle_catalog() {
+  local catalog="$1"
+  local -n versions="$2"
+
+  for version in "${versions[@]}"; do
+    # download chart from remote repository and extract into the temporary directory we have created earlier
+    $HELM fetch --untar "${APPSCODE_CHART_REGISTRY}"/"${catalog}" \
+      --untardir "${TEMP_CHART_DIR}" \
+      --version="${version}"
+
+    if [[ "${UNINSTALL}" == "1" ]]; then
+      uninstall_catalog "${catalog}" "${version}"
+    else
+      install_catalog "${catalog}" "${version}"
+    fi
+
+    # remove the chart so that new version of this chart can be downloaded
+    rm -rf ${TEMP_CHART_DIR}/${catalog}
+  done
+}
+
+catalog_versions=()
+for catalog in "${CATALOGS[@]}"; do
+  case "${catalog}" in
+  "postgres-stash")
+    if [[ "${CATALOG_VERSION}" != "" ]]; then
+      catalog_versions=("${CATALOG_VERSION}")
+    else
+      catalog_versions=(${PG_CATALOG_VERSIONS[@]})
+    fi
+    ;;
+  *)
+    echo "Unrecognized catalog: ${catalog}"
+    exit 1
+    ;;
+  esac
+
+  # install/uninstall this catalog
+  handle_catalog "${catalog}" catalog_versions
+done

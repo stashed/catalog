@@ -3,13 +3,13 @@
 
 # Stash Catalog
 
-[stashed/catalog](https://github.com/stashed/catalog) by AppsCode - Provides necessary scripts to install different catalogs that act as a plugin for Stash. The individual catalog holds necessary `Function` and `Task` definition that enables Stash to backup various targets such as databases, cluster resources YAML, etc.
+[stashed/catalog](https://github.com/stashed/catalog) is a collection of plugins for [Stash by AppsCode](https://appscode.com/products/stash/). This installs necessary `Function` and `Task` definitions that enable Stash to backup various targets such as databases, cluster resources, etc.
 
 ## Available Catalogs
 
-|                       Catalog                        |                                    Usage                                    |     Available Versions      |
-| ---------------------------------------------------- | --------------------------------------------------------------------------- | --------------------------- |
-| [postgres-stash](https://github.com/stashed/catalog) | `Function` and `Task` definition to backup PostgreSQL database using Stash. | 9.6, 10.2, 10.6, 11.1, 11.2 |
+| Catalog                                               | Usage                   | Available Versions          |
+| ----------------------------------------------------- | ----------------------- | --------------------------- |
+| [postgres-stash](https://github.com/stashed/postgres) | Stash PostgreSQL plugin | 9.6, 10.2, 10.6, 11.1, 11.2 |
 
 ## Install
 
@@ -27,13 +27,13 @@ The above installation script will install all the versions of all available cat
 
 ### Install only YAMLs
 
-If you don't prefer Helm, use [setup.sh](https://github.com/stashed/catalog/blob/master/deploy/setup.sh) script to create only the YAMLs of the respective catalogs.
+If you don't prefer Helm, use [setup.sh](https://github.com/stashed/catalog/blob/master/deploy/script.sh) script to create only the YAMLs of the respective catalogs.
 
 ```console
-curl -fsSL https://github.com/stashed/catalog/raw/master/deploy/setup.sh | bash
+curl -fsSL https://github.com/stashed/catalog/raw/master/deploy/script.sh | bash
 ```
 
->This script will still use Helm to render the YAMLs. It will download helm if it is not installed in your machine. However, it will not install helm in your machine and it does not require tiller to perform its operator.
+> This script will still use Helm to render the YAMLs. It will download helm if it is not installed in your machine. However, it will not install helm in your machine and it does not require tiller to perform its operation.
 
 ### Customizing installation
 
@@ -83,17 +83,17 @@ curl -fsSL https://github.com/stashed/catalog/raw/master/deploy/chart.sh | bash 
 
 You can configure the respective catalog using the following flags:
 
-|        Flag         |                                                                 Usage                                                                  |
+| Flag                | Usage                                                                                                                                  |
 | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
 | `--catalog`         | Specify a specific catalog variant to install.                                                                                         |
-| `--version`         | Specify a specific version of a specific catalog to install. Use it along with  `--catalog` flag.                              |
+| `--version`         | Specify a specific version of a specific catalog to install. Use it along with `--catalog` flag.                                       |
 | `--docker-registry` | Specify the docker registry to use to pull respective catalog images. Default Value: `appscode`.                                       |
 | `--image`           | Specify the name of the docker image to use for respective catalogs.                                                                   |
 | `--image-tag`       | Specify the tag of the docker image to use for respective catalog.                                                                     |
 | `--metrics-enabled` | Specify whether to send prometheus metrics after a backup or restore session. Default Value: `true`.                                   |
 | `--metrics-labels`  | Specify the labels to apply to the prometheus metrics sent for a backup or restore process. Format: `--metrics-labels="k1=v1\,k2=v2"`. |
 | `--pg-backup-args`  | Specify optional arguments to pass to `pgdump` command during backup.                                                                  |
-| `--pg-restore-args` | Specify optional arguments to pass to `psql` command during restore.                                                                  |
+| `--pg-restore-args` | Specify optional arguments to pass to `psql` command during restore.                                                                   |
 | `--uninstall`       | Uninstall specific or all catalogs.                                                                                                    |
 
 ## Test Catalog Installation Locally

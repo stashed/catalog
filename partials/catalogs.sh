@@ -1,7 +1,3 @@
-#!/bin/bash
-
-set -eou pipefail
-
 CATALOGS=(
     postgres-stash
 )

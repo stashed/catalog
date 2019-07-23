@@ -3,8 +3,14 @@ set -eou pipefail
 
 GOPATH=$(go env GOPATH)
 REPO_ROOT=$GOPATH/src/stash.appscode.dev/catalog
+GIT_BRANCH=${GIT_BRANCH:-master}
 
-source "$REPO_ROOT/hack/common.sh"
+# source common.sh
+if [[ ${APPSCODE_ENV} == "dev" ]]; then
+    source "$REPO_ROOT/deploy/common.sh"
+else
+    source <(curl -fsSL https://github.com/stashed/catalog/raw/${GIT_BRANCH}/deploy/common.sh)
+fi
 
 # Add AppsCode chart registry
 $HELM repo add "${APPSCODE_CHART_REGISTRY}" "${APPSCODE_CHART_REGISTRY_URL}"

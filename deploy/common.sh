@@ -3,6 +3,7 @@ set -eou pipefail
 
 GOPATH=$(go env GOPATH)
 REPO_ROOT=$GOPATH/src/stash.appscode.dev/catalog
+GIT_BRANCH=${GIT_BRANCH:-master}
 
 OS=""
 ARCH=""
@@ -32,8 +33,12 @@ PG_RESTORE_ARGS=""
 
 UNINSTALL=0
 
-# source ./hack/catalogs.sh
-source "$REPO_ROOT/hack/catalogs.sh"
+# source catalogs.sh
+if [[ ${APPSCODE_ENV} == "dev" ]]; then
+    source "$REPO_ROOT/deploy/catalogs.sh"
+else
+    source <(curl -fsSL https://github.com/stashed/catalog/raw/${GIT_BRANCH}/deploy/catalog.sh)
+fi
 
 function cleanup() {
     # remove temporary directories

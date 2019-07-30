@@ -32,7 +32,7 @@ $ helm repo index $HOME/local-repo/
 **Set `APPSCODE_CHART_REGISTRY_URL` env to point your local repository:**
 
 ```console
-exports APPSCODE_CHART_REGISTRY_URL=http://localhost:8080
+export APPSCODE_CHART_REGISTRY_URL=http://localhost:8080
 ```
 
 Now, you can use the installation scripts to install catalogs from your local repository.

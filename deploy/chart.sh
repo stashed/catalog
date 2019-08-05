@@ -8,6 +8,7 @@ set -eou pipefail
 CATALOGS=(
     stash-postgres
     stash-mongodb
+    stash-elasticsearch
 )
 
 PG_CATALOG_VERSIONS=(
@@ -23,6 +24,16 @@ MGO_CATALOG_VERSIONS=(
     4.0
     3.6
     3.4
+)
+
+ES_CATALOG_VERSIONS=(
+    7.2
+    6.8
+    6.5
+    6.4
+    6.3
+    6.2
+    5.6
 )
 OS=""
 ARCH=""
@@ -49,6 +60,10 @@ METRICS_LABELS=""
 
 PG_BACKUP_ARGS=""
 PG_RESTORE_ARGS=""
+MGO_BACKUP_ARGS=""
+MGO_RESTORE_ARGS=""
+ES_BACKUP_ARGS=""
+ES_RESTORE_ARGS=""
 
 UNINSTALL=0
 
@@ -131,6 +146,13 @@ function catalog_version_supported() {
             return 1
         fi
         ;;
+    "stash-elasticsearch")
+        if array_contains ES_CATALOG_VERSIONS $version; then
+            return 0
+        else
+            return 1
+        fi
+        ;;
     *)
         return 1
         ;;
@@ -155,6 +177,10 @@ show_help() {
     echo "    --metrics-labels                   specify the labels to apply to the prometheus metrics sent for a backup or restore process. format: '--metrics-labels=\"k1=v1\,k2=v2\" '."
     echo "    --pg-backup-args                   specify optional arguments to pass to 'pgdump' command during backup."
     echo "    --pg-restore-args                  specify optional arguments to pass to 'psql' command during  restore."
+    echo "    --mg-backup-args                   specify optional arguments to pass to 'mongodump' command during backup."
+    echo "    --mg-restore-args                  specify optional arguments to pass to 'mongorestore' command during  restore."
+    echo "    --es-backup-args                   specify optional arguments to pass to 'multielasticdump' command during backup."
+    echo "    --es-restore-args                  specify optional arguments to pass to 'multielasticdump' command during  restore."
     echo "    --uninstall                        uninstall specific or all catalogs."
 }
 
@@ -203,6 +229,22 @@ while test $# -gt 0; do
         ;;
     --pg-restore-args*)
         PG_RESTORE_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
+        shift
+        ;;
+    --mg-backup-args*)
+        MGO_BACKUP_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
+        shift
+        ;;
+    --mg-restore-args*)
+        MGO_RESTORE_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
+        shift
+        ;;
+    --es-backup-args*)
+        ES_BACKUP_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
+        shift
+        ;;
+    --es-restore-args*)
+        ES_RESTORE_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
         shift
         ;;
     --uninstall*)
@@ -292,6 +334,20 @@ fi
 if [[ $PG_RESTORE_ARGS != "" ]]; then
     HELM_VALUES+=("--set restore.pgArgs=$PG_RESTORE_ARGS")
 fi
+
+if [[ $MGO_BACKUP_ARGS != "" ]]; then
+    HELM_VALUES+=("--set backup.mgArgs=$MGO_BACKUP_ARGS")
+fi
+if [[ $MGO_RESTORE_ARGS != "" ]]; then
+    HELM_VALUES+=("--set restore.mgArgs=$MGO_RESTORE_ARGS")
+fi
+
+if [[ $ES_BACKUP_ARGS != "" ]]; then
+    HELM_VALUES+=("--set backup.esArgs=$ES_BACKUP_ARGS")
+fi
+if [[ $ES_RESTORE_ARGS != "" ]]; then
+    HELM_VALUES+=("--set restore.esArgs=$ES_RESTORE_ARGS")
+fi
 # Add AppsCode chart registry
 $HELM repo add "${APPSCODE_CHART_REGISTRY}" "${APPSCODE_CHART_REGISTRY_URL}"
 $HELM repo update
@@ -336,6 +392,13 @@ for catalog in "${CATALOGS[@]}"; do
             catalog_versions=("${CATALOG_VERSION}")
         else
             catalog_versions=(${MGO_CATALOG_VERSIONS[@]})
+        fi
+        ;;
+    "stash-elasticsearch")
+        if [[ "${CATALOG_VERSION}" != "" ]]; then
+            catalog_versions=("${CATALOG_VERSION}")
+        else
+            catalog_versions=(${ES_CATALOG_VERSIONS[@]})
         fi
         ;;
     *)

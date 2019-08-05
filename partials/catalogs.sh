@@ -1,6 +1,7 @@
 CATALOGS=(
     stash-postgres
     stash-mongodb
+    stash-elasticsearch
 )
 
 PG_CATALOG_VERSIONS=(
@@ -16,4 +17,14 @@ MGO_CATALOG_VERSIONS=(
     4.0
     3.6
     3.4
+)
+
+ES_CATALOG_VERSIONS=(
+    7.2
+    6.8
+    6.5
+    6.4
+    6.3
+    6.2
+    5.6
 )

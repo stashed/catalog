@@ -27,6 +27,8 @@ MGO_BACKUP_ARGS=""
 MGO_RESTORE_ARGS=""
 ES_BACKUP_ARGS=""
 ES_RESTORE_ARGS=""
+MY_BACKUP_ARGS=""
+MY_RESTORE_ARGS=""
 
 UNINSTALL=0
 
@@ -116,6 +118,13 @@ function catalog_version_supported() {
             return 1
         fi
         ;;
+    "stash-mysql")
+        if array_contains MY_CATALOG_VERSIONS $version; then
+            return 0
+        else
+            return 1
+        fi
+        ;;
     *)
         return 1
         ;;
@@ -144,6 +153,8 @@ show_help() {
     echo "    --mg-restore-args                  specify optional arguments to pass to 'mongorestore' command during  restore."
     echo "    --es-backup-args                   specify optional arguments to pass to 'multielasticdump' command during backup."
     echo "    --es-restore-args                  specify optional arguments to pass to 'multielasticdump' command during  restore."
+    echo "    --my-backup-args                   specify optional arguments to pass to 'mysqldump' command during backup."
+    echo "    --my-restore-args                  specify optional arguments to pass to 'mysql' command during  restore."
     echo "    --uninstall                        uninstall specific or all catalogs."
 }
 
@@ -208,6 +219,14 @@ while test $# -gt 0; do
         ;;
     --es-restore-args*)
         ES_RESTORE_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
+        shift
+        ;;
+    --my-backup-args*)
+        MY_BACKUP_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
+        shift
+        ;;
+    --my-restore-args*)
+        MY_RESTORE_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
         shift
         ;;
     --uninstall*)
@@ -310,4 +329,11 @@ if [[ $ES_BACKUP_ARGS != "" ]]; then
 fi
 if [[ $ES_RESTORE_ARGS != "" ]]; then
     HELM_VALUES+=("--set restore.esArgs=$ES_RESTORE_ARGS")
+fi
+
+if [[ $MY_BACKUP_ARGS != "" ]]; then
+    HELM_VALUES+=("--set backup.myArgs=$MY_BACKUP_ARGS")
+fi
+if [[ $MY_RESTORE_ARGS != "" ]]; then
+    HELM_VALUES+=("--set restore.myArgs=$MY_RESTORE_ARGS")
 fi

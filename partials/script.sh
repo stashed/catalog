@@ -69,6 +69,13 @@ for catalog in "${CATALOGS[@]}"; do
       catalog_versions=(${ES_CATALOG_VERSIONS[@]})
     fi
     ;;
+  "stash-mysql")
+    if [[ "${CATALOG_VERSION}" != "" ]]; then
+      catalog_versions=("${CATALOG_VERSION}")
+    else
+      catalog_versions=(${MY_CATALOG_VERSIONS[@]})
+    fi
+    ;;
   *)
     echo "Unrecognized catalog: ${catalog}"
     exit 1

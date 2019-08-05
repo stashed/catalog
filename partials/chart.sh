@@ -37,6 +37,13 @@ for catalog in "${CATALOGS[@]}"; do
             catalog_versions=(${PG_CATALOG_VERSIONS[@]})
         fi
         ;;
+    "stash-mongodb")
+        if [[ "${CATALOG_VERSION}" != "" ]]; then
+            catalog_versions=("${CATALOG_VERSION}")
+        else
+            catalog_versions=(${MGO_CATALOG_VERSIONS[@]})
+        fi
+        ;;
     *)
         echo "Unrecognized catalog: ${catalog}"
         exit 1

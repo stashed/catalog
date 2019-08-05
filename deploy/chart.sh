@@ -7,6 +7,7 @@ set -eou pipefail
 
 CATALOGS=(
     stash-postgres
+    stash-mongodb
 )
 
 PG_CATALOG_VERSIONS=(
@@ -15,6 +16,13 @@ PG_CATALOG_VERSIONS=(
     10.6
     11.1
     11.2
+)
+
+MGO_CATALOG_VERSIONS=(
+    4.1
+    4.0
+    3.6
+    3.4
 )
 OS=""
 ARCH=""
@@ -111,6 +119,13 @@ function catalog_version_supported() {
     case "$catalog_variant" in
     "stash-postgres")
         if array_contains PG_CATALOG_VERSIONS $version; then
+            return 0
+        else
+            return 1
+        fi
+        ;;
+    "stash-mongodb")
+        if array_contains MGO_CATALOG_VERSIONS $version; then
             return 0
         else
             return 1
@@ -314,6 +329,13 @@ for catalog in "${CATALOGS[@]}"; do
             catalog_versions=("${CATALOG_VERSION}")
         else
             catalog_versions=(${PG_CATALOG_VERSIONS[@]})
+        fi
+        ;;
+    "stash-mongodb")
+        if [[ "${CATALOG_VERSION}" != "" ]]; then
+            catalog_versions=("${CATALOG_VERSION}")
+        else
+            catalog_versions=(${MGO_CATALOG_VERSIONS[@]})
         fi
         ;;
     *)

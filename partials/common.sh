@@ -98,6 +98,13 @@ function catalog_version_supported() {
             return 1
         fi
         ;;
+    "stash-mongodb")
+        if array_contains MGO_CATALOG_VERSIONS $version; then
+            return 0
+        else
+            return 1
+        fi
+        ;;
     *)
         return 1
         ;;

@@ -21,11 +21,11 @@ $ docker run --rm -it \
 
 **Publish catalog chart to the local repository:**
 
-Publish the catalog chart to the local repository. An example of publishing `postgres-stash` chart for [stashed/postgres](https://github.com/stashed/postgres) repository is shown below.
+Publish the catalog chart to the local repository. An example of publishing `stash-postgres` chart for [stashed/postgres](https://github.com/stashed/postgres) repository is shown below.
 
 ```console
-$ helm package chart/postgres-stash
-$ mv ./postgres-stash-11.2.tgz $HOME/local-repo/
+$ helm package chart/stash-postgres
+$ mv ./stash-postgres-11.2.tgz $HOME/local-repo/
 $ helm repo index $HOME/local-repo/
 ```
 

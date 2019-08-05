@@ -1,5 +1,5 @@
 CATALOGS=(
-    postgres-stash
+    stash-postgres
 )
 
 PG_CATALOG_VERSIONS=(

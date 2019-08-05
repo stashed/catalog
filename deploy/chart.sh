@@ -6,7 +6,7 @@ set -eou pipefail
 # Then, run '/partials/build.sh' script to generate this script with the changes.
 
 CATALOGS=(
-    postgres-stash
+    stash-postgres
 )
 
 PG_CATALOG_VERSIONS=(
@@ -32,7 +32,7 @@ APPSCODE_ENV=${APPSCODE_ENV:-prod}
 APPSCODE_CHART_REGISTRY=${APPSCODE_CHART_REGISTRY:-"appscode"}
 APPSCODE_CHART_REGISTRY_URL=${APPSCODE_CHART_REGISTRY_URL:-"https://charts.appscode.com/stable"}
 
-DOCKER_REGISTRY=${REGISTRY:-appscode}
+DOCKER_REGISTRY=${REGISTRY:-stashed}
 DOCKER_IMAGE=""
 DOCKER_TAG=""
 
@@ -109,7 +109,7 @@ function catalog_version_supported() {
     local version=$2
 
     case "$catalog_variant" in
-    "postgres-stash")
+    "stash-postgres")
         if array_contains PG_CATALOG_VERSIONS $version; then
             return 0
         else
@@ -309,7 +309,7 @@ function handle_catalog() {
 catalog_versions=()
 for catalog in "${CATALOGS[@]}"; do
     case "${catalog}" in
-    "postgres-stash")
+    "stash-postgres")
         if [[ "${CATALOG_VERSION}" != "" ]]; then
             catalog_versions=("${CATALOG_VERSION}")
         else

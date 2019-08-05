@@ -48,7 +48,7 @@ function handle_catalog() {
 catalog_versions=()
 for catalog in "${CATALOGS[@]}"; do
   case "${catalog}" in
-  "postgres-stash")
+  "stash-postgres")
     if [[ "${CATALOG_VERSION}" != "" ]]; then
       catalog_versions=("${CATALOG_VERSION}")
     else

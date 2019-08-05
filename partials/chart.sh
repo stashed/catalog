@@ -30,11 +30,32 @@ function handle_catalog() {
 catalog_versions=()
 for catalog in "${CATALOGS[@]}"; do
     case "${catalog}" in
-    "postgres-stash")
+    "stash-postgres")
         if [[ "${CATALOG_VERSION}" != "" ]]; then
             catalog_versions=("${CATALOG_VERSION}")
         else
             catalog_versions=(${PG_CATALOG_VERSIONS[@]})
+        fi
+        ;;
+    "stash-mongodb")
+        if [[ "${CATALOG_VERSION}" != "" ]]; then
+            catalog_versions=("${CATALOG_VERSION}")
+        else
+            catalog_versions=(${MGO_CATALOG_VERSIONS[@]})
+        fi
+        ;;
+    "stash-elasticsearch")
+        if [[ "${CATALOG_VERSION}" != "" ]]; then
+            catalog_versions=("${CATALOG_VERSION}")
+        else
+            catalog_versions=(${ES_CATALOG_VERSIONS[@]})
+        fi
+        ;;
+    "stash-mysql")
+        if [[ "${CATALOG_VERSION}" != "" ]]; then
+            catalog_versions=("${CATALOG_VERSION}")
+        else
+            catalog_versions=(${MY_CATALOG_VERSIONS[@]})
         fi
         ;;
     *)

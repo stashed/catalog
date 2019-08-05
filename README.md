@@ -7,9 +7,12 @@
 
 ## Available Catalogs
 
-| Catalog                                               | Usage                   | Available Versions          |
-| ----------------------------------------------------- | ----------------------- | --------------------------- |
-| [postgres-stash](https://github.com/stashed/postgres) | Stash PostgreSQL plugin | 9.6, 10.2, 10.6, 11.1, 11.2 |
+|                             Catalog                             |           Usage            |        Available Versions         |
+| --------------------------------------------------------------- | -------------------------- | --------------------------------- |
+| [stash-postgres](https://github.com/stashed/postgres)           | Stash PostgreSQL plugin    | 11.2, 11.1, 10.6, 10.2, 9.6       |
+| [stash-mongodb](https://github.com/stashed/mongodb)             | Stash MongoDB plugin       | 4.1, 4.0, 3.6, 3.4                |
+| [stash-elasticsearch](https://github.com/stashed/elasticsearch) | Stash Elasticsearch plugin | 7.2, 6.8, 6.5, 6.4, 6.3, 6.2, 5.6 |
+| [stash-mysql](https://github.com/stashed/postgres)              | Stash MySQL plugin         | 8.0, 5.7                          |
 
 ## Install
 
@@ -43,20 +46,20 @@ You can use `--catalog` and `--version` flag to choose which catalog and which v
 
 If you want to install all available versions of a specific catalog, use `--catalog` flag to specify the desired catalog.
 
-Following command install all the available versions of `postgres-stash` catalog:
+Following command install all the available versions of `stash-postgres` catalog:
 
 ```console
-curl -fsSL https://github.com/stashed/catalog/raw/master/deploy/chart.sh | bash -s -- --catalog=postgres-stash
+curl -fsSL https://github.com/stashed/catalog/raw/master/deploy/chart.sh | bash -s -- --catalog=stash-postgres
 ```
 
 **Install a specific version of a specific catalog:**
 
 If you want to install a specific version of a specific catalog, use `--version` flag along with `--catalog` flag to specify the desired version of the desired catalog.
 
-Following command install only version `10.2` of `postgres-stash` catalog:
+Following command install only version `10.2` of `stash-postgres` catalog:
 
 ```console
-curl -fsSL https://github.com/stashed/catalog/raw/master/deploy/chart.sh | bash -s -- --catalog=postgres-stash --version=10.2
+curl -fsSL https://github.com/stashed/catalog/raw/master/deploy/chart.sh | bash -s -- --catalog=stash-postgres --version=10.2
 ```
 
 ## Uninstall
@@ -70,30 +73,36 @@ curl -fsSL https://github.com/stashed/catalog/raw/master/deploy/chart.sh | bash 
 To uninstall all version of a specific catalog, use `--catalog` flag along with `--uninstall` flag. For example:
 
 ```console
-curl -fsSL https://github.com/stashed/catalog/raw/master/deploy/chart.sh | bash -s -- --uninstall --catalog=postgres-stash
+curl -fsSL https://github.com/stashed/catalog/raw/master/deploy/chart.sh | bash -s -- --uninstall --catalog=stash-postgres
 ```
 
 To uninstall a specific version of a specific catalog, use `--version` flag along with `--uninstall` and `--catalog` flags. For example:
 
 ```console
-curl -fsSL https://github.com/stashed/catalog/raw/master/deploy/chart.sh | bash -s -- --uninstall --catalog=postgres-stash --version=10.2
+curl -fsSL https://github.com/stashed/catalog/raw/master/deploy/chart.sh | bash -s -- --uninstall --catalog=stash-postgres --version=10.2
 ```
 
 ## Configuration Options
 
 You can configure the respective catalog using the following flags:
 
-| Flag                | Usage                                                                                                                                  |
+|        Flag         |                                                                 Usage                                                                  |
 | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
 | `--catalog`         | Specify a specific catalog variant to install.                                                                                         |
 | `--version`         | Specify a specific version of a specific catalog to install. Use it along with `--catalog` flag.                                       |
-| `--docker-registry` | Specify the docker registry to use to pull respective catalog images. Default Value: `appscode`.                                       |
+| `--docker-registry` | Specify the docker registry to use to pull respective catalog images. Default Value: `stashed`.                                        |
 | `--image`           | Specify the name of the docker image to use for respective catalogs.                                                                   |
 | `--image-tag`       | Specify the tag of the docker image to use for respective catalog.                                                                     |
 | `--metrics-enabled` | Specify whether to send prometheus metrics after a backup or restore session. Default Value: `true`.                                   |
 | `--metrics-labels`  | Specify the labels to apply to the prometheus metrics sent for a backup or restore process. Format: `--metrics-labels="k1=v1\,k2=v2"`. |
 | `--pg-backup-args`  | Specify optional arguments to pass to `pgdump` command during backup.                                                                  |
 | `--pg-restore-args` | Specify optional arguments to pass to `psql` command during restore.                                                                   |
+| `--mg-backup-args`  | Specify optional arguments to pass to `mongodump` command during backup.                                                               |
+| `--mg-restore-args` | Specify optional arguments to pass to `mongorestore` command during restore.                                                           |
+| `--es-backup-args`  | Specify optional arguments to pass to `multielaticdump` command during backup.                                                         |
+| `--es-restore-args` | Specify optional arguments to pass to `multielastic` command during restore.                                                           |
+| `--my-backup-args`  | Specify optional arguments to pass to `mysqldump` command during backup.                                                               |
+| `--my-restore-args` | Specify optional arguments to pass to `mysql` command during restore.                                                                  |
 | `--uninstall`       | Uninstall specific or all catalogs.                                                                                                    |
 
 ## Contribution guidelines

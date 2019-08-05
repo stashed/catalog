@@ -6,7 +6,10 @@ set -eou pipefail
 # Then, run '/partials/build.sh' script to generate this script with the changes.
 
 CATALOGS=(
-    postgres-stash
+    stash-postgres
+    stash-mongodb
+    stash-elasticsearch
+    stash-mysql
 )
 
 PG_CATALOG_VERSIONS=(
@@ -15,6 +18,28 @@ PG_CATALOG_VERSIONS=(
     10.6
     11.1
     11.2
+)
+
+MGO_CATALOG_VERSIONS=(
+    4.1
+    4.0
+    3.6
+    3.4
+)
+
+ES_CATALOG_VERSIONS=(
+    7.2
+    6.8
+    6.5
+    6.4
+    6.3
+    6.2
+    5.6
+)
+
+MY_CATALOG_VERSIONS=(
+    8.0
+    5.7
 )
 OS=""
 ARCH=""
@@ -32,7 +57,7 @@ APPSCODE_ENV=${APPSCODE_ENV:-prod}
 APPSCODE_CHART_REGISTRY=${APPSCODE_CHART_REGISTRY:-"appscode"}
 APPSCODE_CHART_REGISTRY_URL=${APPSCODE_CHART_REGISTRY_URL:-"https://charts.appscode.com/stable"}
 
-DOCKER_REGISTRY=${REGISTRY:-appscode}
+DOCKER_REGISTRY=${REGISTRY:-stashed}
 DOCKER_IMAGE=""
 DOCKER_TAG=""
 
@@ -41,6 +66,12 @@ METRICS_LABELS=""
 
 PG_BACKUP_ARGS=""
 PG_RESTORE_ARGS=""
+MGO_BACKUP_ARGS=""
+MGO_RESTORE_ARGS=""
+ES_BACKUP_ARGS=""
+ES_RESTORE_ARGS=""
+MY_BACKUP_ARGS=""
+MY_RESTORE_ARGS=""
 
 UNINSTALL=0
 
@@ -109,8 +140,29 @@ function catalog_version_supported() {
     local version=$2
 
     case "$catalog_variant" in
-    "postgres-stash")
+    "stash-postgres")
         if array_contains PG_CATALOG_VERSIONS $version; then
+            return 0
+        else
+            return 1
+        fi
+        ;;
+    "stash-mongodb")
+        if array_contains MGO_CATALOG_VERSIONS $version; then
+            return 0
+        else
+            return 1
+        fi
+        ;;
+    "stash-elasticsearch")
+        if array_contains ES_CATALOG_VERSIONS $version; then
+            return 0
+        else
+            return 1
+        fi
+        ;;
+    "stash-mysql")
+        if array_contains MY_CATALOG_VERSIONS $version; then
             return 0
         else
             return 1
@@ -140,6 +192,12 @@ show_help() {
     echo "    --metrics-labels                   specify the labels to apply to the prometheus metrics sent for a backup or restore process. format: '--metrics-labels=\"k1=v1\,k2=v2\" '."
     echo "    --pg-backup-args                   specify optional arguments to pass to 'pgdump' command during backup."
     echo "    --pg-restore-args                  specify optional arguments to pass to 'psql' command during  restore."
+    echo "    --mg-backup-args                   specify optional arguments to pass to 'mongodump' command during backup."
+    echo "    --mg-restore-args                  specify optional arguments to pass to 'mongorestore' command during  restore."
+    echo "    --es-backup-args                   specify optional arguments to pass to 'multielasticdump' command during backup."
+    echo "    --es-restore-args                  specify optional arguments to pass to 'multielasticdump' command during  restore."
+    echo "    --my-backup-args                   specify optional arguments to pass to 'mysqldump' command during backup."
+    echo "    --my-restore-args                  specify optional arguments to pass to 'mysql' command during  restore."
     echo "    --uninstall                        uninstall specific or all catalogs."
 }
 
@@ -188,6 +246,30 @@ while test $# -gt 0; do
         ;;
     --pg-restore-args*)
         PG_RESTORE_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
+        shift
+        ;;
+    --mg-backup-args*)
+        MGO_BACKUP_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
+        shift
+        ;;
+    --mg-restore-args*)
+        MGO_RESTORE_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
+        shift
+        ;;
+    --es-backup-args*)
+        ES_BACKUP_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
+        shift
+        ;;
+    --es-restore-args*)
+        ES_RESTORE_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
+        shift
+        ;;
+    --my-backup-args*)
+        MY_BACKUP_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
+        shift
+        ;;
+    --my-restore-args*)
+        MY_RESTORE_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
         shift
         ;;
     --uninstall*)
@@ -277,6 +359,27 @@ fi
 if [[ $PG_RESTORE_ARGS != "" ]]; then
     HELM_VALUES+=("--set restore.pgArgs=$PG_RESTORE_ARGS")
 fi
+
+if [[ $MGO_BACKUP_ARGS != "" ]]; then
+    HELM_VALUES+=("--set backup.mgArgs=$MGO_BACKUP_ARGS")
+fi
+if [[ $MGO_RESTORE_ARGS != "" ]]; then
+    HELM_VALUES+=("--set restore.mgArgs=$MGO_RESTORE_ARGS")
+fi
+
+if [[ $ES_BACKUP_ARGS != "" ]]; then
+    HELM_VALUES+=("--set backup.esArgs=$ES_BACKUP_ARGS")
+fi
+if [[ $ES_RESTORE_ARGS != "" ]]; then
+    HELM_VALUES+=("--set restore.esArgs=$ES_RESTORE_ARGS")
+fi
+
+if [[ $MY_BACKUP_ARGS != "" ]]; then
+    HELM_VALUES+=("--set backup.myArgs=$MY_BACKUP_ARGS")
+fi
+if [[ $MY_RESTORE_ARGS != "" ]]; then
+    HELM_VALUES+=("--set restore.myArgs=$MY_RESTORE_ARGS")
+fi
 # create a temporary directory to store charts files
 TEMP_CHART_DIR="$(mktemp -dt appscode-XXXXXX)"
 TEMP_DIRS+=(${TEMP_CHART_DIR})
@@ -327,11 +430,32 @@ function handle_catalog() {
 catalog_versions=()
 for catalog in "${CATALOGS[@]}"; do
   case "${catalog}" in
-  "postgres-stash")
+  "stash-postgres")
     if [[ "${CATALOG_VERSION}" != "" ]]; then
       catalog_versions=("${CATALOG_VERSION}")
     else
       catalog_versions=(${PG_CATALOG_VERSIONS[@]})
+    fi
+    ;;
+  "stash-mongodb")
+    if [[ "${CATALOG_VERSION}" != "" ]]; then
+      catalog_versions=("${CATALOG_VERSION}")
+    else
+      catalog_versions=(${MGO_CATALOG_VERSIONS[@]})
+    fi
+    ;;
+  "stash-elasticsearch")
+    if [[ "${CATALOG_VERSION}" != "" ]]; then
+      catalog_versions=("${CATALOG_VERSION}")
+    else
+      catalog_versions=(${ES_CATALOG_VERSIONS[@]})
+    fi
+    ;;
+  "stash-mysql")
+    if [[ "${CATALOG_VERSION}" != "" ]]; then
+      catalog_versions=("${CATALOG_VERSION}")
+    else
+      catalog_versions=(${MY_CATALOG_VERSIONS[@]})
     fi
     ;;
   *)

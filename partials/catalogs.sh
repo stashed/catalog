@@ -31,6 +31,6 @@ ES_CATALOG_VERSIONS=(
 )
 
 MY_CATALOG_VERSIONS=(
-    8.0
+    8.0.14
     5.7
 )

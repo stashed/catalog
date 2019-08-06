@@ -12,7 +12,7 @@
 | [stash-postgres](https://github.com/stashed/postgres)           | Stash PostgreSQL plugin    | 11.2, 11.1, 10.6, 10.2, 9.6       |
 | [stash-mongodb](https://github.com/stashed/mongodb)             | Stash MongoDB plugin       | 4.1, 4.0, 3.6, 3.4                |
 | [stash-elasticsearch](https://github.com/stashed/elasticsearch) | Stash Elasticsearch plugin | 7.2, 6.8, 6.5, 6.4, 6.3, 6.2, 5.6 |
-| [stash-mysql](https://github.com/stashed/postgres)              | Stash MySQL plugin         | 8.0, 5.7                          |
+| [stash-mysql](https://github.com/stashed/postgres)              | Stash MySQL plugin         | 8.0.14, 5.7                       |
 
 ## Install
 

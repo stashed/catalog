@@ -7,7 +7,7 @@
 
 ## Available Catalogs
 
-|                             Catalog                             |           Usage            |           Available Versions            |
+| Catalog                                                         | Usage                      | Available Versions                      |
 | --------------------------------------------------------------- | -------------------------- | --------------------------------------- |
 | [stash-postgres](https://github.com/stashed/postgres)           | Stash PostgreSQL plugin    | 11.2<!--, 11.1, 10.6, 10.2, 9.6-->      |
 | [stash-mongodb](https://github.com/stashed/mongodb)             | Stash MongoDB plugin       | 3.6<!--, 4.1, 4.0,  3.4-->              |
@@ -86,24 +86,29 @@ curl -fsSL https://github.com/stashed/catalog/raw/master/deploy/chart.sh | bash 
 
 You can configure the respective catalog using the following flags:
 
-|        Flag         |                                                                 Usage                                                                  |
-| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `--catalog`         | Specify a specific catalog variant to install.                                                                                         |
-| `--version`         | Specify a specific version of a specific catalog to install. Use it along with `--catalog` flag.                                       |
-| `--docker-registry` | Specify the docker registry to use to pull respective catalog images. Default Value: `stashed`.                                        |
-| `--image`           | Specify the name of the docker image to use for respective catalogs.                                                                   |
-| `--image-tag`       | Specify the tag of the docker image to use for respective catalog.                                                                     |
-| `--metrics-enabled` | Specify whether to send prometheus metrics after a backup or restore session. Default Value: `true`.                                   |
-| `--metrics-labels`  | Specify the labels to apply to the prometheus metrics sent for a backup or restore process. Format: `--metrics-labels="k1=v1\,k2=v2"`. |
-| `--pg-backup-args`  | Specify optional arguments to pass to `pgdump` command during backup.                                                                  |
-| `--pg-restore-args` | Specify optional arguments to pass to `psql` command during restore.                                                                   |
-| `--mg-backup-args`  | Specify optional arguments to pass to `mongodump` command during backup.                                                               |
-| `--mg-restore-args` | Specify optional arguments to pass to `mongorestore` command during restore.                                                           |
-| `--es-backup-args`  | Specify optional arguments to pass to `multielaticdump` command during backup.                                                         |
-| `--es-restore-args` | Specify optional arguments to pass to `multielastic` command during restore.                                                           |
-| `--my-backup-args`  | Specify optional arguments to pass to `mysqldump` command during backup.                                                               |
-| `--my-restore-args` | Specify optional arguments to pass to `mysql` command during restore.                                                                  |
-| `--uninstall`       | Uninstall specific or all catalogs.                                                                                                    |
+| Flag                   | Usage                                                                                                                                       |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--catalog`            | Specify a specific catalog variant to install.                                                                                              |
+| `--version`            | Specify a specific version of a specific catalog to install. Use it along with `--catalog` flag.                                            |
+| `--docker-registry`    | Specify the docker registry to use to pull respective catalog images. Default Value: `stashed`.                                             |
+| `--image`              | Specify the name of the docker image to use for respective catalogs.                                                                        |
+| `--image-tag`          | Specify the tag of the docker image to use for respective catalog.                                                                          |
+|                        |
+| `--pg-backup-args`     | Specify optional arguments to pass to `pgdump` command during backup.                                                                       |
+| `--pg-restore-args`    | Specify optional arguments to pass to `psql` command during restore.                                                                        |
+| `--mg-backup-args`     | Specify optional arguments to pass to `mongodump` command during backup.                                                                    |
+| `--mg-restore-args`    | Specify optional arguments to pass to `mongorestore` command during restore.                                                                |
+| `--es-backup-args`     | Specify optional arguments to pass to `multielaticdump` command during backup.                                                              |
+| `--es-restore-args`    | Specify optional arguments to pass to `multielastic` command during restore.                                                                |
+| `--my-backup-args`     | Specify optional arguments to pass to `mysqldump` command during backup.                                                                    |
+| `--my-restore-args`    | Specify optional arguments to pass to `mysql` command during restore.                                                                       |
+| `--enable-persistence` | Specify whether to use persistent volume to store the backup/restore data temporarily before uploading to backend or injecting into target. |
+| `--pvc`                | Specify name of an existing PVC to use as persistent volume to store data temporarily.                                                      |
+| `--pvc-size`           | Specify size of a PVC to be created to use as persistent volume to store data temporarily.                                                  |
+| `--pvc-namespace`      | Specify the namespace of the PVC.                                                                                                           |
+| `--storageclass`       | Specify the storage class for the PVC.                                                                                                      |
+| `--access-mode`        | Specify the access mode for the PVC.                                                                                                        |
+| `--uninstall`          | Uninstall specific or all catalogs.                                                                                                         |
 
 ## Contribution guidelines
 

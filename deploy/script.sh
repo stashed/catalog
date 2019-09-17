@@ -61,9 +61,6 @@ DOCKER_REGISTRY=${REGISTRY:-stashed}
 DOCKER_IMAGE=""
 DOCKER_TAG=""
 
-ENABLE_PROMETHEUS_METRICS=true
-METRICS_LABELS=""
-
 PG_BACKUP_ARGS=""
 PG_RESTORE_ARGS=""
 MGO_BACKUP_ARGS=""
@@ -72,6 +69,13 @@ ES_BACKUP_ARGS=""
 ES_RESTORE_ARGS=""
 MY_BACKUP_ARGS=""
 MY_RESTORE_ARGS=""
+
+PERSISTENCE_ENABLED=false
+EXISTING_PVC_NAME=""
+ACCESS_MODE=""
+PVC_SIZE=""
+PVC_NAMESPACE=""
+STORAGE_CLASS=""
 
 UNINSTALL=0
 
@@ -188,8 +192,6 @@ show_help() {
     echo "    --docker-registry                  specify the docker registry to use to pull respective catalog images. default value: 'appscode'.   "
     echo "    --image                            specify the name of the docker image to use for respective catalogs."
     echo "    --image-tag                        specify the tag of the docker image to use for respective catalog."
-    echo "    --metrics-enabled                  specify whether to send prometheus metrics after a backup or restore session. default value: 'true'."
-    echo "    --metrics-labels                   specify the labels to apply to the prometheus metrics sent for a backup or restore process. format: '--metrics-labels=\"k1=v1\,k2=v2\" '."
     echo "    --pg-backup-args                   specify optional arguments to pass to 'pgdump' command during backup."
     echo "    --pg-restore-args                  specify optional arguments to pass to 'psql' command during  restore."
     echo "    --mg-backup-args                   specify optional arguments to pass to 'mongodump' command during backup."
@@ -198,6 +200,12 @@ show_help() {
     echo "    --es-restore-args                  specify optional arguments to pass to 'multielasticdump' command during  restore."
     echo "    --my-backup-args                   specify optional arguments to pass to 'mysqldump' command during backup."
     echo "    --my-restore-args                  specify optional arguments to pass to 'mysql' command during  restore."
+    echo "    --enable-persistence               specify whether to use persistent volume to store the backup/restore data temporarily before uploading to backend or injecting into target."
+    echo "    --pvc                              specify name of an existing pvc to use as persistent volume to store data temporarily."
+    echo "    --pvc-size                         specify size of a pvc to be created to use as persistent volume to store data temporarily."
+    echo "    --pvc-namespace                    specify the namespace of the pvc."
+    echo "    --storageclass                     specify the storage class for the pvc."
+    echo "    --access-mode                      specify the access mode for the pvc."
     echo "    --uninstall                        uninstall specific or all catalogs."
 }
 
@@ -227,17 +235,6 @@ while test $# -gt 0; do
         ;;
     --image*)
         DOCKER_IMAGE=$(echo $1 | sed -e 's/^[^=]*=//g')
-        shift
-        ;;
-    --metrics-enabled*)
-        val=$(echo $1 | sed -e 's/^[^=]*=//g')
-        if [[ "$val" == "false" ]]; then
-            ENABLE_PROMETHEUS_METRICS=false
-        fi
-        shift
-        ;;
-    --metrics-labels*)
-        METRICS_LABELS=$(echo $1 | sed -e 's/^[^=]*=//g')
         shift
         ;;
     --pg-backup-args*)
@@ -270,6 +267,33 @@ while test $# -gt 0; do
         ;;
     --my-restore-args*)
         MY_RESTORE_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
+        shift
+        ;;
+    --enable-persistence*)
+        val=$(echo $1 | sed -e 's/^[^=]*=//g')
+        if [[ "$val" == "true" ]]; then
+            PERSISTENCE_ENABLED=true
+        fi
+        shift
+        ;;
+    --pvc-size*)
+        PVC_SIZE=$(echo $1 | sed -e 's/^[^=]*=//g')
+        shift
+        ;;
+    --pvc-namespace*)
+        PVC_NAMESPACE=$(echo $1 | sed -e 's/^[^=]*=//g')
+        shift
+        ;;
+    --pvc*)
+        EXISTING_PVC_NAME=$(echo $1 | sed -e 's/^[^=]*=//g')
+        shift
+        ;;
+    --storageclass*)
+        STORAGE_CLASS=$(echo $1 | sed -e 's/^[^=]*=//g')
+        shift
+        ;;
+    --access-mode*)
+        ACCESS_MODE=$(echo $1 | sed -e 's/^[^=]*=//g')
         shift
         ;;
     --uninstall*)
@@ -344,14 +368,6 @@ if [[ $DOCKER_TAG != "" ]]; then
     HELM_VALUES+=("--set docker.tag=$DOCKER_TAG")
 fi
 
-if [[ $ENABLE_PROMETHEUS_METRICS == "false" ]]; then
-    HELM_VALUES+=("--set metrics.enabled=$ENABLE_PROMETHEUS_METRICS")
-fi
-
-if [[ $METRICS_LABELS != "" ]]; then
-    HELM_VALUES+=("--set metrics.labels='$METRICS_LABELS'")
-fi
-
 # ========== catalog specific values =================
 if [[ $PG_BACKUP_ARGS != "" ]]; then
     HELM_VALUES+=("--set backup.pgArgs=$PG_BACKUP_ARGS")
@@ -379,6 +395,31 @@ if [[ $MY_BACKUP_ARGS != "" ]]; then
 fi
 if [[ $MY_RESTORE_ARGS != "" ]]; then
     HELM_VALUES+=("--set restore.myArgs=$MY_RESTORE_ARGS")
+fi
+
+# ======== persistent storage specific values ===========
+if [[ $PERSISTENCE_ENABLED == true ]]; then
+    HELM_VALUES+=("--set persistence.enabled=$PERSISTENCE_ENABLED")
+fi
+
+if [[ $EXISTING_PVC_NAME != "" ]]; then
+    HELM_VALUES+=("--set persistence.existingClaim=$EXISTING_PVC_NAME")
+fi
+
+if [[ $PVC_SIZE != "" ]]; then
+    HELM_VALUES+=("--set persistence.size=$PVC_SIZE")
+fi
+
+if [[ $PVC_NAMESPACE != "" ]]; then
+    HELM_VALUES+=("--set persistence.namespace=$PVC_NAMESPACE")
+fi
+
+if [[ $STORAGE_CLASS != "" ]]; then
+    HELM_VALUES+=("--set persistence.storageClass=$STORAGE_CLASS")
+fi
+
+if [[ $ACCESS_MODE != "" ]]; then
+    HELM_VALUES+=("--set persistence.accessMode=$ACCESS_MODE")
 fi
 # create a temporary directory to store charts files
 TEMP_CHART_DIR="$(mktemp -dt appscode-XXXXXX)"

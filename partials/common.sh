@@ -27,13 +27,6 @@ ES_RESTORE_ARGS=""
 MY_BACKUP_ARGS=""
 MY_RESTORE_ARGS=""
 
-PERSISTENCE_ENABLED=false
-EXISTING_PVC_NAME=""
-ACCESS_MODE=""
-PVC_SIZE=""
-PVC_NAMESPACE=""
-STORAGE_CLASS=""
-
 UNINSTALL=0
 
 function cleanup() {
@@ -157,12 +150,6 @@ show_help() {
     echo "    --es-restore-args                  specify optional arguments to pass to 'multielasticdump' command during  restore."
     echo "    --my-backup-args                   specify optional arguments to pass to 'mysqldump' command during backup."
     echo "    --my-restore-args                  specify optional arguments to pass to 'mysql' command during  restore."
-    echo "    --enable-persistence               specify whether to use persistent volume to store the backup/restore data temporarily before uploading to backend or injecting into target."
-    echo "    --pvc                              specify name of an existing pvc to use as persistent volume to store data temporarily."
-    echo "    --pvc-size                         specify size of a pvc to be created to use as persistent volume to store data temporarily."
-    echo "    --pvc-namespace                    specify the namespace of the pvc."
-    echo "    --storageclass                     specify the storage class for the pvc."
-    echo "    --access-mode                      specify the access mode for the pvc."
     echo "    --uninstall                        uninstall specific or all catalogs."
 }
 
@@ -224,33 +211,6 @@ while test $# -gt 0; do
         ;;
     --my-restore-args*)
         MY_RESTORE_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
-        shift
-        ;;
-    --enable-persistence*)
-        val=$(echo $1 | sed -e 's/^[^=]*=//g')
-        if [[ "$val" == "true" ]]; then
-            PERSISTENCE_ENABLED=true
-        fi
-        shift
-        ;;
-    --pvc-size*)
-        PVC_SIZE=$(echo $1 | sed -e 's/^[^=]*=//g')
-        shift
-        ;;
-    --pvc-namespace*)
-        PVC_NAMESPACE=$(echo $1 | sed -e 's/^[^=]*=//g')
-        shift
-        ;;
-    --pvc*)
-        EXISTING_PVC_NAME=$(echo $1 | sed -e 's/^[^=]*=//g')
-        shift
-        ;;
-    --storageclass*)
-        STORAGE_CLASS=$(echo $1 | sed -e 's/^[^=]*=//g')
-        shift
-        ;;
-    --access-mode*)
-        ACCESS_MODE=$(echo $1 | sed -e 's/^[^=]*=//g')
         shift
         ;;
     --uninstall*)
@@ -352,29 +312,4 @@ if [[ $MY_BACKUP_ARGS != "" ]]; then
 fi
 if [[ $MY_RESTORE_ARGS != "" ]]; then
     HELM_VALUES+=("--set restore.myArgs=$MY_RESTORE_ARGS")
-fi
-
-# ======== persistent storage specific values ===========
-if [[ $PERSISTENCE_ENABLED == true ]]; then
-    HELM_VALUES+=("--set persistence.enabled=$PERSISTENCE_ENABLED")
-fi
-
-if [[ $EXISTING_PVC_NAME != "" ]]; then
-    HELM_VALUES+=("--set persistence.existingClaim=$EXISTING_PVC_NAME")
-fi
-
-if [[ $PVC_SIZE != "" ]]; then
-    HELM_VALUES+=("--set persistence.size=$PVC_SIZE")
-fi
-
-if [[ $PVC_NAMESPACE != "" ]]; then
-    HELM_VALUES+=("--set persistence.namespace=$PVC_NAMESPACE")
-fi
-
-if [[ $STORAGE_CLASS != "" ]]; then
-    HELM_VALUES+=("--set persistence.storageClass=$STORAGE_CLASS")
-fi
-
-if [[ $ACCESS_MODE != "" ]]; then
-    HELM_VALUES+=("--set persistence.accessMode=$ACCESS_MODE")
 fi

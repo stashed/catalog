@@ -18,9 +18,6 @@ DOCKER_REGISTRY=${REGISTRY:-stashed}
 DOCKER_IMAGE=""
 DOCKER_TAG=""
 
-ENABLE_PROMETHEUS_METRICS=true
-METRICS_LABELS=""
-
 PG_BACKUP_ARGS=""
 PG_RESTORE_ARGS=""
 MGO_BACKUP_ARGS=""
@@ -145,8 +142,6 @@ show_help() {
     echo "    --docker-registry                  specify the docker registry to use to pull respective catalog images. default value: 'appscode'.   "
     echo "    --image                            specify the name of the docker image to use for respective catalogs."
     echo "    --image-tag                        specify the tag of the docker image to use for respective catalog."
-    echo "    --metrics-enabled                  specify whether to send prometheus metrics after a backup or restore session. default value: 'true'."
-    echo "    --metrics-labels                   specify the labels to apply to the prometheus metrics sent for a backup or restore process. format: '--metrics-labels=\"k1=v1\,k2=v2\" '."
     echo "    --pg-backup-args                   specify optional arguments to pass to 'pgdump' command during backup."
     echo "    --pg-restore-args                  specify optional arguments to pass to 'psql' command during  restore."
     echo "    --mg-backup-args                   specify optional arguments to pass to 'mongodump' command during backup."
@@ -184,17 +179,6 @@ while test $# -gt 0; do
         ;;
     --image*)
         DOCKER_IMAGE=$(echo $1 | sed -e 's/^[^=]*=//g')
-        shift
-        ;;
-    --metrics-enabled*)
-        val=$(echo $1 | sed -e 's/^[^=]*=//g')
-        if [[ "$val" == "false" ]]; then
-            ENABLE_PROMETHEUS_METRICS=false
-        fi
-        shift
-        ;;
-    --metrics-labels*)
-        METRICS_LABELS=$(echo $1 | sed -e 's/^[^=]*=//g')
         shift
         ;;
     --pg-backup-args*)
@@ -299,14 +283,6 @@ fi
 
 if [[ $DOCKER_TAG != "" ]]; then
     HELM_VALUES+=("--set docker.tag=$DOCKER_TAG")
-fi
-
-if [[ $ENABLE_PROMETHEUS_METRICS == "false" ]]; then
-    HELM_VALUES+=("--set metrics.enabled=$ENABLE_PROMETHEUS_METRICS")
-fi
-
-if [[ $METRICS_LABELS != "" ]]; then
-    HELM_VALUES+=("--set metrics.labels='$METRICS_LABELS'")
 fi
 
 # ========== catalog specific values =================

@@ -13,33 +13,53 @@ CATALOGS=(
 )
 
 PG_CATALOG_VERSIONS=(
-    # 9.6
-    # 10.2
-    # 10.6
-    # 11.1
+    9.6
+    10.2
+    10.6
+    11.1
     11.2
 )
 
 MGO_CATALOG_VERSIONS=(
-    # 4.1
-    # 4.0
+    3.4
+    3.4.17
+    3.4.22
     3.6
-    # 3.4
+    3.6.8
+    3.6.13
+    4.0
+    4.0.3
+    4.0.5
+    4.0.11
+    4.1
+    4.1.4
+    4.1.7
+    4.1.13
 )
 
 ES_CATALOG_VERSIONS=(
-    # 7.2
-    # 6.8
-    # 6.5
-    # 6.4
+    5.6
+    5.6.4
+    6.2
+    6.2.4
     6.3
-    # 6.2
-    # 5.6
+    6.3.0
+    6.4
+    6.4.0
+    6.5
+    6.5.3
+    6.8
+    6.8.0
+    7.2
+    7.2.0
+    7.3
+    7.3.2
 )
 
 MY_CATALOG_VERSIONS=(
+    5.7.25
+    8.0.3
     8.0.14
-    # 5.7
 )
 OS=""
 ARCH=""
@@ -60,9 +80,6 @@ APPSCODE_CHART_REGISTRY_URL=${APPSCODE_CHART_REGISTRY_URL:-"https://charts.appsc
 DOCKER_REGISTRY=${REGISTRY:-stashed}
 DOCKER_IMAGE=""
 DOCKER_TAG=""
-
-ENABLE_PROMETHEUS_METRICS=true
-METRICS_LABELS=""
 
 PG_BACKUP_ARGS=""
 PG_RESTORE_ARGS=""
@@ -188,8 +205,6 @@ show_help() {
     echo "    --docker-registry                  specify the docker registry to use to pull respective catalog images. default value: 'appscode'.   "
     echo "    --image                            specify the name of the docker image to use for respective catalogs."
     echo "    --image-tag                        specify the tag of the docker image to use for respective catalog."
-    echo "    --metrics-enabled                  specify whether to send prometheus metrics after a backup or restore session. default value: 'true'."
-    echo "    --metrics-labels                   specify the labels to apply to the prometheus metrics sent for a backup or restore process. format: '--metrics-labels=\"k1=v1\,k2=v2\" '."
     echo "    --pg-backup-args                   specify optional arguments to pass to 'pgdump' command during backup."
     echo "    --pg-restore-args                  specify optional arguments to pass to 'psql' command during  restore."
     echo "    --mg-backup-args                   specify optional arguments to pass to 'mongodump' command during backup."
@@ -227,17 +242,6 @@ while test $# -gt 0; do
         ;;
     --image*)
         DOCKER_IMAGE=$(echo $1 | sed -e 's/^[^=]*=//g')
-        shift
-        ;;
-    --metrics-enabled*)
-        val=$(echo $1 | sed -e 's/^[^=]*=//g')
-        if [[ "$val" == "false" ]]; then
-            ENABLE_PROMETHEUS_METRICS=false
-        fi
-        shift
-        ;;
-    --metrics-labels*)
-        METRICS_LABELS=$(echo $1 | sed -e 's/^[^=]*=//g')
         shift
         ;;
     --pg-backup-args*)
@@ -342,14 +346,6 @@ fi
 
 if [[ $DOCKER_TAG != "" ]]; then
     HELM_VALUES+=("--set docker.tag=$DOCKER_TAG")
-fi
-
-if [[ $ENABLE_PROMETHEUS_METRICS == "false" ]]; then
-    HELM_VALUES+=("--set metrics.enabled=$ENABLE_PROMETHEUS_METRICS")
-fi
-
-if [[ $METRICS_LABELS != "" ]]; then
-    HELM_VALUES+=("--set metrics.labels='$METRICS_LABELS'")
 fi
 
 # ========== catalog specific values =================

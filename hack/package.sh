@@ -3,26 +3,22 @@ set -eou pipefail
 
 GOPATH=$(go env GOPATH)
 STASH_ROOT=$GOPATH/src/stash.appscode.dev
+CHART_REPO_ROOT=$GOPATH/src/github.com/appscode/charts
 
 source $STASH_ROOT/catalog/partials/catalogs.sh
-
-epoch=$(date +%s)
-current_branch=$(git rev-parse --abbrev-ref HEAD)
-new_branch="charts-$epoch"
-# create new branch where the chart will be stored
-git checkout -b $new_branch
 
 function package() {
     local catalog="$1"
     local -n versions="$2"
 
     # directory where the charts will be stored
-    package_dir="$STASH_ROOT/catalog/charts/$catalog/"
+    package_dir="$CHART_REPO_ROOT/stable/$catalog/"
     # temporary directory to clone the source repo
     repo_dir="$(mktemp -dt stashed-XXXXXX)"
     # remove "stash-" prefix from catalog name to extract the repo name
     repo=${catalog#"stash-"}
 
+    echo "using chart repository dir: $package_dir"
     mkdir -p $package_dir
 
     pushd $repo_dir
@@ -69,8 +65,17 @@ for catalog in "${CATALOGS[@]}"; do
 done
 
 # push chart into new branch
+pushd $CHART_REPO_ROOT
+
+epoch=$(date +%s)
+current_branch=$(git rev-parse --abbrev-ref HEAD)
+new_branch="charts-$epoch"
+
 git add .
+git checkout -b $new_branch
 git commit -m "Auto package catalog charts"
 git push origin $new_branch
+
 # switch to original branch
 git checkout $current_branch
+popd

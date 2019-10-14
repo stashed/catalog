@@ -68,6 +68,7 @@ DOWNLOAD_DIR=""
 TEMP_DIRS=()
 
 HELM=""
+HELM_HOME=$HOME/.helm
 HELM_VALUES=()
 
 CATALOG_VARIANT="all"
@@ -326,12 +327,15 @@ else
     DOWNLOAD_URL=${ARTIFACT}/${HELM_DIST}
     DOWNLOAD_DIR="$(mktemp -dt helm-XXXXXX)"
     TEMP_DIRS+=($DOWNLOAD_DIR)
-
     downloadFile ${HELM_DIST}
 
     tar xf ${DOWNLOAD_DIR}/${HELM_DIST} -C ${DOWNLOAD_DIR}
     HELM=${DOWNLOAD_DIR}/${OS}-${ARCH}/${HELM_BIN}
     chmod +x $HELM
+
+    # Set HELM_HOME to a temporary directory
+    export HELM_HOME=$DOWNLOAD_DIR/.helm
+    $HELM init --client-only
 fi
 
 # generate values flags with provided input

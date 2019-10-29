@@ -58,6 +58,13 @@ for catalog in "${CATALOGS[@]}"; do
             catalog_versions=(${MY_CATALOG_VERSIONS[@]})
         fi
         ;;
+    "stash-percona-xtradb")
+        if [[ "${CATALOG_VERSION}" != "" ]]; then
+            catalog_versions=("${CATALOG_VERSION}")
+        else
+            catalog_versions=(${XTRADB_CATALOG_VERSIONS[@]})
+        fi
+        ;;
     *)
         echo "Unrecognized catalog: ${catalog}"
         exit 1

@@ -10,6 +10,7 @@ CATALOGS=(
     stash-mongodb
     stash-elasticsearch
     stash-mysql
+    stash-percona-xtradb
 )
 
 PG_CATALOG_VERSIONS=(
@@ -61,6 +62,10 @@ MY_CATALOG_VERSIONS=(
     8.0.3
     8.0.14
 )
+
+XTRADB_CATALOG_VERSIONS=(
+    5.7
+)
 OS=""
 ARCH=""
 DOWNLOAD_URL=""
@@ -90,6 +95,8 @@ ES_BACKUP_ARGS=""
 ES_RESTORE_ARGS=""
 MY_BACKUP_ARGS=""
 MY_RESTORE_ARGS=""
+XTRADB_BACKUP_ARGS=""
+XTRADB_RESTORE_ARGS=""
 
 UNINSTALL=0
 
@@ -186,6 +193,13 @@ function catalog_version_supported() {
             return 1
         fi
         ;;
+    "stash-percona-xtradb")
+        if array_contains XTRADB_CATALOG_VERSIONS $version; then
+            return 0
+        else
+            return 1
+        fi
+        ;;
     *)
         return 1
         ;;
@@ -203,7 +217,7 @@ show_help() {
     echo "-h, --help                             show brief help"
     echo "    --catalog                          specify a specific catalog variant to install."
     echo "    --version                          specify a specific version of a specific catalog to install. use it along with '--catalog' flag."
-    echo "    --docker-registry                  specify the docker registry to use to pull respective catalog images. default value: 'appscode'.   "
+    echo "    --docker-registry                  specify the docker registry to use to pull respective catalog images. default value: 'stashed'.   "
     echo "    --image                            specify the name of the docker image to use for respective catalogs."
     echo "    --image-tag                        specify the tag of the docker image to use for respective catalog."
     echo "    --pg-backup-args                   specify optional arguments to pass to 'pgdump' command during backup."
@@ -214,6 +228,8 @@ show_help() {
     echo "    --es-restore-args                  specify optional arguments to pass to 'multielasticdump' command during  restore."
     echo "    --my-backup-args                   specify optional arguments to pass to 'mysqldump' command during backup."
     echo "    --my-restore-args                  specify optional arguments to pass to 'mysql' command during  restore."
+    echo "    --xtradb-backup-args               specify optional arguments to pass to 'xtrabackup' command during backup."
+    echo "    --xtradb-restore-args              specify optional arguments to pass to 'xtrabackup' command during  restore."
     echo "    --uninstall                        uninstall specific or all catalogs."
 }
 
@@ -275,6 +291,14 @@ while test $# -gt 0; do
         ;;
     --my-restore-args*)
         MY_RESTORE_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
+        shift
+        ;;
+    --xtradb-backup-args*)
+        XTRADB_BACKUP_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
+        shift
+        ;;
+    --xtradb-restore-args*)
+        XTRADB_RESTORE_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
         shift
         ;;
     --uninstall*)
@@ -380,6 +404,13 @@ fi
 if [[ $MY_RESTORE_ARGS != "" ]]; then
     HELM_VALUES+=("--set restore.myArgs=$MY_RESTORE_ARGS")
 fi
+
+if [[ $XTRADB_BACKUP_ARGS != "" ]]; then
+    HELM_VALUES+=("--set backup.xtradbArgs=$XTRADB_BACKUP_ARGS")
+fi
+if [[ $XTRADB_RESTORE_ARGS != "" ]]; then
+    HELM_VALUES+=("--set restore.xtradbArgs=$XTRADB_RESTORE_ARGS")
+fi
 # create a temporary directory to store charts files
 TEMP_CHART_DIR="$(mktemp -dt appscode-XXXXXX)"
 TEMP_DIRS+=(${TEMP_CHART_DIR})
@@ -456,6 +487,13 @@ for catalog in "${CATALOGS[@]}"; do
       catalog_versions=("${CATALOG_VERSION}")
     else
       catalog_versions=(${MY_CATALOG_VERSIONS[@]})
+    fi
+    ;;
+  "stash-percona-xtradb")
+    if [[ "${CATALOG_VERSION}" != "" ]]; then
+      catalog_versions=("${CATALOG_VERSION}")
+    else
+      catalog_versions=(${XTRADB_CATALOG_VERSIONS[@]})
     fi
     ;;
   *)

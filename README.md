@@ -7,12 +7,13 @@
 
 ## Available Catalogs
 
-| Catalog                                                         | Usage                      | Available Versions                                                                                                             |
-| --------------------------------------------------------------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| [stash-postgres](https://github.com/stashed/postgres)           | Stash PostgreSQL plugin    | `9.6`, `10.2`, `10.6`, `11.1`, `11.2`                                                                                          |
-| [stash-mongodb](https://github.com/stashed/mongodb)             | Stash MongoDB plugin       | `3.4`, `3.4.17`, `3.4.22`, `3.6`, `3.6.8`, `3.6.13`, `4.0`, `4.0.3`, `4.0.5`, `4.0.11`, `4.1`, `4.1.4`, `4.1.7`, `4.1.13`      |
-| [stash-elasticsearch](https://github.com/stashed/elasticsearch) | Stash Elasticsearch plugin | `5.6`, `5.6.4`, `6.2`, `6.2.4`, `6.3`, `6.3.0`, `6.4`, `6.4.0`, `6.5`, `6.5.3`, `6.8`, `6.8.0`, `7.2`, `7.2.0`, `7.3`, `7.3.2` |
-| [stash-mysql](https://github.com/stashed/postgres)              | Stash MySQL plugin         | `5.7.25`, `8.0.3`, `8.0.14`                                                                                                    |
+| Catalog                                                         | Usage                       | Available Versions                                                                                                             |
+| --------------------------------------------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| [stash-postgres](https://github.com/stashed/postgres)           | Stash PostgreSQL plugin     | `9.6`, `10.2`, `10.6`, `11.1`, `11.2`                                                                                          |
+| [stash-mongodb](https://github.com/stashed/mongodb)             | Stash MongoDB plugin        | `3.4`, `3.4.17`, `3.4.22`, `3.6`, `3.6.8`, `3.6.13`, `4.0`, `4.0.3`, `4.0.5`, `4.0.11`, `4.1`, `4.1.4`, `4.1.7`, `4.1.13`      |
+| [stash-elasticsearch](https://github.com/stashed/elasticsearch) | Stash Elasticsearch plugin  | `5.6`, `5.6.4`, `6.2`, `6.2.4`, `6.3`, `6.3.0`, `6.4`, `6.4.0`, `6.5`, `6.5.3`, `6.8`, `6.8.0`, `7.2`, `7.2.0`, `7.3`, `7.3.2` |
+| [stash-mysql](https://github.com/stashed/postgres)              | Stash MySQL plugin          | `5.7.25`, `8.0.3`, `8.0.14`                                                                                                    |
+| [stash-percona-xtradb](https://github.com/stashed/postgres)     | Stash Percona XtraDB plugin | `5.7`                                                                                                                          |
 
 ## Install
 
@@ -86,23 +87,25 @@ curl -fsSL https://github.com/stashed/catalog/raw/master/deploy/chart.sh | bash 
 
 You can configure the respective catalog using the following flags:
 
-| Flag                | Usage                                                                                            |
-| ------------------- | ------------------------------------------------------------------------------------------------ |
-| `--catalog`         | Specify a specific catalog variant to install.                                                   |
-| `--version`         | Specify a specific version of a specific catalog to install. Use it along with `--catalog` flag. |
-| `--docker-registry` | Specify the docker registry to use to pull respective catalog images. Default Value: `stashed`.  |
-| `--image`           | Specify the name of the docker image to use for respective catalogs.                             |
-| `--image-tag`       | Specify the tag of the docker image to use for respective catalog.                               |
-|                     |
-| `--pg-backup-args`  | Specify optional arguments to pass to `pgdump` command during backup.                            |
-| `--pg-restore-args` | Specify optional arguments to pass to `psql` command during restore.                             |
-| `--mg-backup-args`  | Specify optional arguments to pass to `mongodump` command during backup.                         |
-| `--mg-restore-args` | Specify optional arguments to pass to `mongorestore` command during restore.                     |
-| `--es-backup-args`  | Specify optional arguments to pass to `multielaticdump` command during backup.                   |
-| `--es-restore-args` | Specify optional arguments to pass to `multielastic` command during restore.                     |
-| `--my-backup-args`  | Specify optional arguments to pass to `mysqldump` command during backup.                         |
-| `--my-restore-args` | Specify optional arguments to pass to `mysql` command during restore.                            |
-| `--uninstall`       | Uninstall specific or all catalogs.                                                              |
+| Flag                    | Usage                                                                                            |
+| ----------------------- | ------------------------------------------------------------------------------------------------ |
+| `--catalog`             | Specify a specific catalog variant to install.                                                   |
+| `--version`             | Specify a specific version of a specific catalog to install. Use it along with `--catalog` flag. |
+| `--docker-registry`     | Specify the docker registry to use to pull respective catalog images. Default Value: `stashed`.  |
+| `--image`               | Specify the name of the docker image to use for respective catalogs.                             |
+| `--image-tag`           | Specify the tag of the docker image to use for respective catalog.                               |
+|                         |
+| `--pg-backup-args`      | Specify optional arguments to pass to `pgdump` command during backup.                            |
+| `--pg-restore-args`     | Specify optional arguments to pass to `psql` command during restore.                             |
+| `--mg-backup-args`      | Specify optional arguments to pass to `mongodump` command during backup.                         |
+| `--mg-restore-args`     | Specify optional arguments to pass to `mongorestore` command during restore.                     |
+| `--es-backup-args`      | Specify optional arguments to pass to `multielaticdump` command during backup.                   |
+| `--es-restore-args`     | Specify optional arguments to pass to `multielastic` command during restore.                     |
+| `--my-backup-args`      | Specify optional arguments to pass to `mysqldump` command during backup.                         |
+| `--my-restore-args`     | Specify optional arguments to pass to `mysql` command during restore.                            |
+| `--xtradb-backup-args`  | Specify optional arguments to pass to `xtrabackup` command during backup.                        |
+| `--xtradb-restore-args` | Specify optional arguments to pass to `xtrabackup` command during restore.                       |
+| `--uninstall`           | Uninstall specific or all catalogs.                                                              |
 
 ## Contribution guidelines
 

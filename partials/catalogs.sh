@@ -3,6 +3,7 @@ CATALOGS=(
     stash-mongodb
     stash-elasticsearch
     stash-mysql
+    stash-percona-xtradb
 )
 
 PG_CATALOG_VERSIONS=(
@@ -53,4 +54,8 @@ MY_CATALOG_VERSIONS=(
     5.7.25
     8.0.3
     8.0.14
+)
+
+XTRADB_CATALOG_VERSIONS=(
+    5.7
 )

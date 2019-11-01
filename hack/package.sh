@@ -54,6 +54,9 @@ for catalog in "${CATALOGS[@]}"; do
     "stash-mysql")
         catalog_versions=(${MY_CATALOG_VERSIONS[@]})
         ;;
+    "stash-percona-xtradb")
+        catalog_versions=(${XTRADB_CATALOG_VERSIONS[@]})
+        ;;
     *)
         echo "Unrecognized catalog: ${catalog}"
         exit 1

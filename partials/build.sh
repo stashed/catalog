@@ -15,21 +15,21 @@ set -eou pipefail
 # add common header to the script
 echo -e "$HEADER" >"$REPO_ROOT/deploy/script.sh"
 # append './partials/catalog.sh' script
-cat "$REPO_ROOT/partials/catalogs.sh" >> "$REPO_ROOT/deploy/script.sh"
+cat "$REPO_ROOT/partials/catalogs.sh" >>"$REPO_ROOT/deploy/script.sh"
 # append './partials/common.sh' script
-cat "$REPO_ROOT/partials/common.sh" >> "$REPO_ROOT/deploy/script.sh"
+cat "$REPO_ROOT/partials/common.sh" >>"$REPO_ROOT/deploy/script.sh"
 # append './partials/script.sh' script
-cat "$REPO_ROOT/partials/script.sh" >> "$REPO_ROOT/deploy/script.sh"
+cat "$REPO_ROOT/partials/script.sh" >>"$REPO_ROOT/deploy/script.sh"
 
 # ============ Generate './deploy/chart.sh' script ======================
 # add common header to the script
 echo -e "$HEADER" >"$REPO_ROOT/deploy/chart.sh"
 # append './partials/catalog.sh' script
-cat "$REPO_ROOT/partials/catalogs.sh" >> "$REPO_ROOT/deploy/chart.sh"
+cat "$REPO_ROOT/partials/catalogs.sh" >>"$REPO_ROOT/deploy/chart.sh"
 # append './partials/common.sh' script
-cat "$REPO_ROOT/partials/common.sh" >> "$REPO_ROOT/deploy/chart.sh"
+cat "$REPO_ROOT/partials/common.sh" >>"$REPO_ROOT/deploy/chart.sh"
 # append './partials/chart.sh' script
-cat "$REPO_ROOT/partials/chart.sh" >> "$REPO_ROOT/deploy/chart.sh"
+cat "$REPO_ROOT/partials/chart.sh" >>"$REPO_ROOT/deploy/chart.sh"
 
 # make generated scripts executable
 chmod +x "$REPO_ROOT/deploy/script.sh"

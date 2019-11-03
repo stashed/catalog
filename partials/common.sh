@@ -44,8 +44,8 @@ function detectOS() {
     OS=$(echo $(uname) | tr '[:upper:]' '[:lower:]')
 
     case "$OS" in
-    # Minimalist GNU for Windows
-    cygwin* | mingw* | msys*) OS='windows' ;;
+        # Minimalist GNU for Windows
+        cygwin* | mingw* | msys*) OS='windows' ;;
     esac
 }
 
@@ -53,14 +53,14 @@ function detectOS() {
 function detectArch() {
     ARCH=$(uname -m)
     case $ARCH in
-    armv5*) ARCH="armv5" ;;
-    armv6*) ARCH="armv6" ;;
-    armv7*) ARCH="arm" ;;
-    aarch64) ARCH="arm64" ;;
-    x86) ARCH="386" ;;
-    x86_64) ARCH="amd64" ;;
-    i686) ARCH="386" ;;
-    i386) ARCH="386" ;;
+        armv5*) ARCH="armv5" ;;
+        armv6*) ARCH="armv6" ;;
+        armv7*) ARCH="arm" ;;
+        aarch64) ARCH="arm64" ;;
+        x86) ARCH="386" ;;
+        x86_64) ARCH="amd64" ;;
+        i686) ARCH="386" ;;
+        i386) ARCH="386" ;;
     esac
 }
 
@@ -97,44 +97,44 @@ function catalog_version_supported() {
     local version=$2
 
     case "$catalog_variant" in
-    "stash-postgres")
-        if array_contains PG_CATALOG_VERSIONS $version; then
-            return 0
-        else
+        "stash-postgres")
+            if array_contains PG_CATALOG_VERSIONS $version; then
+                return 0
+            else
+                return 1
+            fi
+            ;;
+        "stash-mongodb")
+            if array_contains MGO_CATALOG_VERSIONS $version; then
+                return 0
+            else
+                return 1
+            fi
+            ;;
+        "stash-elasticsearch")
+            if array_contains ES_CATALOG_VERSIONS $version; then
+                return 0
+            else
+                return 1
+            fi
+            ;;
+        "stash-mysql")
+            if array_contains MY_CATALOG_VERSIONS $version; then
+                return 0
+            else
+                return 1
+            fi
+            ;;
+        "stash-percona-xtradb")
+            if array_contains XTRADB_CATALOG_VERSIONS $version; then
+                return 0
+            else
+                return 1
+            fi
+            ;;
+        *)
             return 1
-        fi
-        ;;
-    "stash-mongodb")
-        if array_contains MGO_CATALOG_VERSIONS $version; then
-            return 0
-        else
-            return 1
-        fi
-        ;;
-    "stash-elasticsearch")
-        if array_contains ES_CATALOG_VERSIONS $version; then
-            return 0
-        else
-            return 1
-        fi
-        ;;
-    "stash-mysql")
-        if array_contains MY_CATALOG_VERSIONS $version; then
-            return 0
-        else
-            return 1
-        fi
-        ;;
-    "stash-percona-xtradb")
-        if array_contains XTRADB_CATALOG_VERSIONS $version; then
-            return 0
-        else
-            return 1
-        fi
-        ;;
-    *)
-        return 1
-        ;;
+            ;;
     esac
 }
 
@@ -167,82 +167,82 @@ show_help() {
 
 while test $# -gt 0; do
     case "$1" in
-    -h | --help)
-        show_help
-        exit 0
-        ;;
-    --catalog*)
-        variant=$(echo $1 | sed -e 's/^[^=]*=//g')
-        CATALOG_VARIANT=$variant
-        shift
-        ;;
-    --version*)
-        version=$(echo $1 | sed -e 's/^[^=]*=//g')
-        CATALOG_VERSION=$version
-        shift
-        ;;
-    --docker-registry*)
-        DOCKER_REGISTRY=$(echo $1 | sed -e 's/^[^=]*=//g')
-        shift
-        ;;
-    --image-tag*)
-        DOCKER_TAG=$(echo $1 | sed -e 's/^[^=]*=//g')
-        shift
-        ;;
-    --image*)
-        DOCKER_IMAGE=$(echo $1 | sed -e 's/^[^=]*=//g')
-        shift
-        ;;
-    --pg-backup-args*)
-        PG_BACKUP_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
-        shift
-        ;;
-    --pg-restore-args*)
-        PG_RESTORE_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
-        shift
-        ;;
-    --mg-backup-args*)
-        MGO_BACKUP_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
-        shift
-        ;;
-    --mg-restore-args*)
-        MGO_RESTORE_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
-        shift
-        ;;
-    --es-backup-args*)
-        ES_BACKUP_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
-        shift
-        ;;
-    --es-restore-args*)
-        ES_RESTORE_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
-        shift
-        ;;
-    --my-backup-args*)
-        MY_BACKUP_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
-        shift
-        ;;
-    --my-restore-args*)
-        MY_RESTORE_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
-        shift
-        ;;
-    --xtradb-backup-args*)
-        XTRADB_BACKUP_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
-        shift
-        ;;
-    --xtradb-restore-args*)
-        XTRADB_RESTORE_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
-        shift
-        ;;
-    --uninstall*)
-        UNINSTALL=1
-        shift
-        ;;
-    *)
-        echo "unknown flag: $1"
-        echo " "
-        show_help
-        exit 1
-        ;;
+        -h | --help)
+            show_help
+            exit 0
+            ;;
+        --catalog*)
+            variant=$(echo $1 | sed -e 's/^[^=]*=//g')
+            CATALOG_VARIANT=$variant
+            shift
+            ;;
+        --version*)
+            version=$(echo $1 | sed -e 's/^[^=]*=//g')
+            CATALOG_VERSION=$version
+            shift
+            ;;
+        --docker-registry*)
+            DOCKER_REGISTRY=$(echo $1 | sed -e 's/^[^=]*=//g')
+            shift
+            ;;
+        --image-tag*)
+            DOCKER_TAG=$(echo $1 | sed -e 's/^[^=]*=//g')
+            shift
+            ;;
+        --image*)
+            DOCKER_IMAGE=$(echo $1 | sed -e 's/^[^=]*=//g')
+            shift
+            ;;
+        --pg-backup-args*)
+            PG_BACKUP_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
+            shift
+            ;;
+        --pg-restore-args*)
+            PG_RESTORE_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
+            shift
+            ;;
+        --mg-backup-args*)
+            MGO_BACKUP_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
+            shift
+            ;;
+        --mg-restore-args*)
+            MGO_RESTORE_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
+            shift
+            ;;
+        --es-backup-args*)
+            ES_BACKUP_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
+            shift
+            ;;
+        --es-restore-args*)
+            ES_RESTORE_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
+            shift
+            ;;
+        --my-backup-args*)
+            MY_BACKUP_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
+            shift
+            ;;
+        --my-restore-args*)
+            MY_RESTORE_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
+            shift
+            ;;
+        --xtradb-backup-args*)
+            XTRADB_BACKUP_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
+            shift
+            ;;
+        --xtradb-restore-args*)
+            XTRADB_RESTORE_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
+            shift
+            ;;
+        --uninstall*)
+            UNINSTALL=1
+            shift
+            ;;
+        *)
+            echo "unknown flag: $1"
+            echo " "
+            show_help
+            exit 1
+            ;;
     esac
 done
 
@@ -275,9 +275,9 @@ else
     HELM_DIST=${HELM_BIN}-${HELM_VERSION}-${OS}-${ARCH}.tar.gz
 
     case "$OS" in
-    cygwin* | mingw* | msys*)
-        HELM_BIN=${HELM_BIN}.exe
-        ;;
+        cygwin* | mingw* | msys*)
+            HELM_BIN=${HELM_BIN}.exe
+            ;;
     esac
 
     DOWNLOAD_URL=${ARTIFACT}/${HELM_DIST}

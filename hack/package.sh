@@ -44,7 +44,7 @@ function package() {
 
     for version in "${versions[@]}"; do
         git checkout $version
-        helm package chart/$catalog
+        helm package charts/$catalog
         mv ./*.tgz $package_dir
     done
 

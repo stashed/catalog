@@ -96,7 +96,7 @@ DOCKER_REPO_ROOT := /go/src/$(GO_PKG)/$(REPO)
 
 .PHONY: gen
 gen:
-	@true
+	./partials/build.sh
 
 fmt: $(BUILD_DIRS)
 	@docker run                                                 \

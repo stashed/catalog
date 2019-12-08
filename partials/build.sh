@@ -1,8 +1,10 @@
 #!/bin/bash
 set -eou pipefail
 
-GOPATH=$(go env GOPATH)
-REPO_ROOT=$GOPATH/src/stash.appscode.dev/catalog
+REPO_ROOT=$(dirname "${BASH_SOURCE[0]}")/..
+
+echo $(pwd)
+echo $REPO_ROOT
 
 HEADER="#!/bin/bash
 set -eou pipefail

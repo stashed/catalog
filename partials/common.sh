@@ -270,8 +270,8 @@ function ensure_helm() {
 
     # if the desrired version is already installed then use it
     if [ -x "$(command -v helm)" ]; then
-        installed_version="$(helm version --short | head -c2)" # take only the major part of the version
-        desired_version="$(echo $HELM_VERSION | head -c2)"     # take only the major part of the version
+        installed_version="$(helm version --short | head -c2 || test $? -eq 141)" # take only the major part of the version
+        desired_version="$(echo $HELM_VERSION | head -c2 || test $? -eq 141)"     # take only the major part of the version
         if [[ "${installed_version}" == "${desired_version}" ]]; then
             HELM=helm
             return # desired version is present. so, no need to download.

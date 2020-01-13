@@ -1,3 +1,6 @@
+# Ensure Helm binary
+ensure_helm "v3.0.2"
+
 # Add AppsCode chart registry
 $HELM repo add "${APPSCODE_CHART_REGISTRY}" "${APPSCODE_CHART_REGISTRY_URL}"
 $HELM repo update
@@ -5,13 +8,13 @@ $HELM repo update
 function install_catalog() {
     local catalog="$1"
     local version="$2"
-    $HELM install "${APPSCODE_CHART_REGISTRY}"/"${catalog}" --name "${catalog}-${version}" --version "${version}" ${HELM_VALUES[@]}
+    $HELM install "${catalog}-${version}" "${APPSCODE_CHART_REGISTRY}"/"${catalog}" --version "${version}" ${HELM_VALUES[@]}
 }
 
 function uninstall_catalog() {
     local catalog="$1"
     local version="$2"
-    $HELM delete "${catalog}-${version}" --purge
+    $HELM delete "${catalog}-${version}"
 }
 
 function handle_catalog() {

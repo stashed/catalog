@@ -419,12 +419,9 @@ fi
 if [[ $XTRADB_RESTORE_ARGS != "" ]]; then
     HELM_VALUES+=("--set restore.xtradbArgs=$XTRADB_RESTORE_ARGS")
 fi
-# create a temporary directory to store charts files
-TEMP_CHART_DIR="$(mktemp -dt appscode-XXXXXX)"
-TEMP_DIRS+=(${TEMP_CHART_DIR})
-
 # Ensure Helm binary
-ensure_helm "v3.0.2"
+ensure_helm "v2.16.1"
+$HELM init --client-only
 
 # Add AppsCode chart registry
 $HELM repo add "${APPSCODE_CHART_REGISTRY}" "${APPSCODE_CHART_REGISTRY_URL}"
@@ -433,19 +430,13 @@ $HELM repo update
 function install_catalog() {
     local catalog="$1"
     local version="$2"
-
-    # render template then pipe to "kubectl apply" command
-    $HELM template "${TEMP_CHART_DIR}"/"${catalog}" ${HELM_VALUES[@]} |
-        kubectl apply -f -
+    $HELM install "${APPSCODE_CHART_REGISTRY}"/"${catalog}" --name "${catalog}-${version}" --version "${version}" ${HELM_VALUES[@]}
 }
 
 function uninstall_catalog() {
     local catalog="$1"
     local version="$2"
-
-    # render template then pipe to "kubectl delete" command
-    $HELM template "${TEMP_CHART_DIR}"/"${catalog}" |
-        kubectl delete -f -
+    $HELM delete "${catalog}-${version}" --purge
 }
 
 function handle_catalog() {
@@ -453,19 +444,11 @@ function handle_catalog() {
     local -n versions="$2"
 
     for version in "${versions[@]}"; do
-        # download chart from remote repository and extract into the temporary directory we have created earlier
-        $HELM fetch --untar "${APPSCODE_CHART_REGISTRY}"/"${catalog}" \
-            --untardir "${TEMP_CHART_DIR}" \
-            --version="${version}"
-
         if [[ "${UNINSTALL}" == "1" ]]; then
             uninstall_catalog "${catalog}" "${version}"
         else
             install_catalog "${catalog}" "${version}"
         fi
-
-        # remove the chart so that new version of this chart can be downloaded
-        rm -rf ${TEMP_CHART_DIR}/${catalog}
     done
 }
 

@@ -1,3 +1,86 @@
+#!/bin/bash
+
+# Copyright The Stash Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+set -eou pipefail
+
+# This script has been generated automatically by '/partials/build.sh' script.
+# Don't modify anything here. Make your desired change in the partial scripts.
+# Then, run '/partials/build.sh' script to generate this script with the changes.
+
+CATALOGS=(
+    stash-postgres
+    stash-mongodb
+    stash-elasticsearch
+    stash-mysql
+    stash-percona-xtradb
+)
+
+PG_CATALOG_VERSIONS=(
+    9.6
+    10.2
+    10.6
+    11.1
+    11.2
+)
+
+MGO_CATALOG_VERSIONS=(
+    3.4
+    3.4.17
+    3.4.22
+    3.6
+    3.6.8
+    3.6.13
+    4.0
+    4.0.3
+    4.0.5
+    4.0.11
+    4.1
+    4.1.4
+    4.1.7
+    4.1.13
+)
+
+ES_CATALOG_VERSIONS=(
+    5.6
+    5.6.4
+    6.2
+    6.2.4
+    6.3
+    6.3.0
+    6.4
+    6.4.0
+    6.5
+    6.5.3
+    6.8
+    6.8.0
+    7.2
+    7.2.0
+    7.3
+    7.3.2
+)
+
+MY_CATALOG_VERSIONS=(
+    5.7.25
+    8.0.3
+    8.0.14
+)
+
+XTRADB_CATALOG_VERSIONS=(
+    5.7
+)
 OS=""
 ARCH=""
 DOWNLOAD_URL=""
@@ -351,3 +434,82 @@ fi
 if [[ $XTRADB_RESTORE_ARGS != "" ]]; then
     HELM_VALUES+=("--set restore.xtradbArgs=$XTRADB_RESTORE_ARGS")
 fi
+# Ensure Helm binary
+ensure_helm "v3.0.2"
+
+# Add AppsCode chart registry
+$HELM repo add "${APPSCODE_CHART_REGISTRY}" "${APPSCODE_CHART_REGISTRY_URL}"
+$HELM repo update
+
+function install_catalog() {
+    local catalog="$1"
+    local version="$2"
+    $HELM install "${catalog}-${version}" "${APPSCODE_CHART_REGISTRY}"/"${catalog}" --version "${version}" ${HELM_VALUES[@]}
+}
+
+function uninstall_catalog() {
+    local catalog="$1"
+    local version="$2"
+    $HELM delete "${catalog}-${version}"
+}
+
+function handle_catalog() {
+    local catalog="$1"
+    local -n versions="$2"
+
+    for version in "${versions[@]}"; do
+        if [[ "${UNINSTALL}" == "1" ]]; then
+            uninstall_catalog "${catalog}" "${version}"
+        else
+            install_catalog "${catalog}" "${version}"
+        fi
+    done
+}
+
+catalog_versions=()
+for catalog in "${CATALOGS[@]}"; do
+    case "${catalog}" in
+        "stash-postgres")
+            if [[ "${CATALOG_VERSION}" != "" ]]; then
+                catalog_versions=("${CATALOG_VERSION}")
+            else
+                catalog_versions=(${PG_CATALOG_VERSIONS[@]})
+            fi
+            ;;
+        "stash-mongodb")
+            if [[ "${CATALOG_VERSION}" != "" ]]; then
+                catalog_versions=("${CATALOG_VERSION}")
+            else
+                catalog_versions=(${MGO_CATALOG_VERSIONS[@]})
+            fi
+            ;;
+        "stash-elasticsearch")
+            if [[ "${CATALOG_VERSION}" != "" ]]; then
+                catalog_versions=("${CATALOG_VERSION}")
+            else
+                catalog_versions=(${ES_CATALOG_VERSIONS[@]})
+            fi
+            ;;
+        "stash-mysql")
+            if [[ "${CATALOG_VERSION}" != "" ]]; then
+                catalog_versions=("${CATALOG_VERSION}")
+            else
+                catalog_versions=(${MY_CATALOG_VERSIONS[@]})
+            fi
+            ;;
+        "stash-percona-xtradb")
+            if [[ "${CATALOG_VERSION}" != "" ]]; then
+                catalog_versions=("${CATALOG_VERSION}")
+            else
+                catalog_versions=(${XTRADB_CATALOG_VERSIONS[@]})
+            fi
+            ;;
+        *)
+            echo "Unrecognized catalog: ${catalog}"
+            exit 1
+            ;;
+    esac
+
+    # install/uninstall this catalog
+    handle_catalog "${catalog}" catalog_versions
+done

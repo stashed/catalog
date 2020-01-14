@@ -347,13 +347,22 @@ if [[ $CATALOG_VERSION != "" ]]; then
     fi
 fi
 
-# Download helm if already not installed
-if [ -x "$(command -v helm)" ]; then
-    HELM=helm
-else
-    echo "Helm is not installed!. Downloading Helm."
+# Download helm if the desried version is not installed
+function ensure_helm() {
+    HELM_VERSION="$1"
+
+    # if the desrired version is already installed then use it
+    if [ -x "$(command -v helm)" ]; then
+        installed_version="$(helm version --short | head -c2 || test $? -eq 141)" # take only the major part of the version
+        desired_version="$(echo $HELM_VERSION | head -c2 || test $? -eq 141)"     # take only the major part of the version
+        if [[ "${installed_version}" == "${desired_version}" ]]; then
+            HELM=helm
+            return # desired version is present. so, no need to download.
+        fi
+    fi
+
+    echo "Helm $HELM_VERSION is not installed!. Downloading....."
     ARTIFACT="https://get.helm.sh"
-    HELM_VERSION="v2.14.1"
     HELM_BIN=helm
     HELM_DIST=${HELM_BIN}-${HELM_VERSION}-${OS}-${ARCH}.tar.gz
 
@@ -374,8 +383,7 @@ else
 
     # Set HELM_HOME to a temporary directory
     export HELM_HOME=$DOWNLOAD_DIR/.helm
-    $HELM init --client-only
-fi
+}
 
 # generate values flags with provided input
 # ========== common values =================
@@ -429,6 +437,9 @@ fi
 # create a temporary directory to store charts files
 TEMP_CHART_DIR="$(mktemp -dt appscode-XXXXXX)"
 TEMP_DIRS+=(${TEMP_CHART_DIR})
+
+# Ensure Helm binary
+ensure_helm "v3.0.2"
 
 # Add AppsCode chart registry
 $HELM repo add "${APPSCODE_CHART_REGISTRY}" "${APPSCODE_CHART_REGISTRY_URL}"

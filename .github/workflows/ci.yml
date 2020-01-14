@@ -78,11 +78,15 @@ jobs:
         kubectl create --validate=false -f https://github.com/stashed/stash/raw/master/api/crds/stash.appscode.com_tasks.yaml
         kubectl wait --for=condition=NamesAccepted crds --all --timeout=5m
 
-    - name: Test charts
+    - name: Test Helm 3
       run: |
-        helm init --client-only
-        ./deploy/chart.sh
-        ./deploy/chart.sh --uninstall
+        ./deploy/helm3.sh
+        ./deploy/helm3.sh --uninstall
+
+    - name: Test Helm 2
+      run: |
+        ./deploy/helm2.sh
+        ./deploy/helm2.sh --uninstall
 
     - name: Test script installer
       run: |

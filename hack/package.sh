@@ -91,7 +91,7 @@ new_branch="charts-$epoch"
 
 git add .
 git checkout -b $new_branch
-git commit -m "Auto package catalog charts"
+git commit -s -m "Update Stash addons charts"
 git push origin $new_branch
 
 # switch to original branch

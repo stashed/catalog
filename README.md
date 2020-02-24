@@ -7,13 +7,13 @@
 
 ## Available Catalogs
 
-| Catalog                                                         | Usage                       | Available Versions                                                                                                             |
-| --------------------------------------------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| [stash-postgres](https://github.com/stashed/postgres)           | Stash PostgreSQL plugin     | `9.6`, `10.2`, `10.6`, `11.1`, `11.2`                                                                                          |
-| [stash-mongodb](https://github.com/stashed/mongodb)             | Stash MongoDB plugin        | `3.4`, `3.4.17`, `3.4.22`, `3.6`, `3.6.8`, `3.6.13`, `4.0`, `4.0.3`, `4.0.5`, `4.0.11`, `4.1`, `4.1.4`, `4.1.7`, `4.1.13`      |
-| [stash-elasticsearch](https://github.com/stashed/elasticsearch) | Stash Elasticsearch plugin  | `5.6`, `5.6.4`, `6.2`, `6.2.4`, `6.3`, `6.3.0`, `6.4`, `6.4.0`, `6.5`, `6.5.3`, `6.8`, `6.8.0`, `7.2`, `7.2.0`, `7.3`, `7.3.2` |
-| [stash-mysql](https://github.com/stashed/postgres)              | Stash MySQL plugin          | `5.7.25`, `8.0.3`, `8.0.14`                                                                                                    |
-| [stash-percona-xtradb](https://github.com/stashed/postgres)     | Stash Percona XtraDB plugin | `5.7`                                                                                                                          |
+| Catalog                                                         | Usage                       | Available Versions                                                                                                                        |
+| --------------------------------------------------------------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| [stash-postgres](https://github.com/stashed/postgres)           | Stash PostgreSQL plugin     | `9.6`, `10.2`, `10.6`, `11.1`, `11.2`                                                                                                     |
+| [stash-mongodb](https://github.com/stashed/mongodb)             | Stash MongoDB plugin        | `3.4`, `3.4.17`, `3.4.22`, `3.6`, `3.6.8`, `3.6.13`, `4.0`, `4.0.3`, `4.0.5`, `4.0.11`, `4.1`, `4.1.4`, `4.1.7`, `4.1.13`, `4.2`, `4.2.3` |
+| [stash-elasticsearch](https://github.com/stashed/elasticsearch) | Stash Elasticsearch plugin  | `5.6`, `5.6.4`, `6.2`, `6.2.4`, `6.3`, `6.3.0`, `6.4`, `6.4.0`, `6.5`, `6.5.3`, `6.8`, `6.8.0`, `7.2`, `7.2.0`, `7.3`, `7.3.2`            |
+| [stash-mysql](https://github.com/stashed/postgres)              | Stash MySQL plugin          | `5.7.25`, `8.0.3`, `8.0.14`                                                                                                               |
+| [stash-percona-xtradb](https://github.com/stashed/postgres)     | Stash Percona XtraDB plugin | `5.7`                                                                                                                                     |
 
 ## Contribution guidelines
 

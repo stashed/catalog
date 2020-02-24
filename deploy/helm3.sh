@@ -51,6 +51,8 @@ MGO_CATALOG_VERSIONS=(
     4.1.4
     4.1.7
     4.1.13
+    4.2
+    4.2.3
 )
 
 ES_CATALOG_VERSIONS=(
@@ -353,8 +355,9 @@ function ensure_helm() {
 
     # if the desrired version is already installed then use it
     if [ -x "$(command -v helm)" ]; then
-        installed_version="$(helm version --short | head -c2 || test $? -eq 141)" # take only the major part of the version
-        desired_version="$(echo $HELM_VERSION | head -c2 || test $? -eq 141)"     # take only the major part of the version
+        helm_version=$(helm version --short 2>/dev/null || true)
+        installed_version="$(echo $helm_version | head -c2 || test $? -eq 141)" # take only the major part of the version
+        desired_version="$(echo $HELM_VERSION | head -c2 || test $? -eq 141)"   # take only the major part of the version
         if [[ "${installed_version}" == "${desired_version}" ]]; then
             HELM=helm
             return # desired version is present. so, no need to download.
@@ -435,7 +438,7 @@ if [[ $XTRADB_RESTORE_ARGS != "" ]]; then
     HELM_VALUES+=("--set restore.xtradbArgs=$XTRADB_RESTORE_ARGS")
 fi
 # Ensure Helm binary
-ensure_helm "v3.0.2"
+ensure_helm "v3.1.1"
 
 # Add AppsCode chart registry
 $HELM repo add "${APPSCODE_CHART_REGISTRY}" "${APPSCODE_CHART_REGISTRY_URL}"

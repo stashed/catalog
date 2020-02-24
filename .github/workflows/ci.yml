@@ -83,7 +83,7 @@ jobs:
 
     - name: Setup Helm 2
       run: |
-        helm version
+        curl -L https://git.io/get_helm.sh | bash
         kubectl -n kube-system create sa tiller
         kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller
         helm init --service-account tiller

@@ -65,13 +65,6 @@ jobs:
         echo "create docker-registry secret"
         kubectl create secret docker-registry ${REGISTRY_SECRET} --namespace=kube-system --docker-server=https://index.docker.io/v1/ --docker-username=${USERNAME} --docker-password=${DOCKER_TOKEN}
 
-    - name: Install Helm
-      run: |
-        kubectl -n kube-system create sa tiller
-        kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller
-        helm init --service-account tiller
-        kubectl wait --for=condition=Ready pods -n kube-system --all --timeout=5m
-
     - name: Install CRDs
       run: |
         kubectl create --validate=false -f https://github.com/stashed/apimachinery/raw/master/api/crds/stash.appscode.com_functions.yaml
@@ -83,12 +76,20 @@ jobs:
         ./deploy/helm3.sh
         ./deploy/helm3.sh --uninstall
 
-    - name: Test Helm 2
-      run: |
-        ./deploy/helm2.sh
-        ./deploy/helm2.sh --uninstall
-
     - name: Test script installer
       run: |
         ./deploy/script.sh
         ./deploy/script.sh --uninstall
+
+    - name: Setup Helm 2
+      run: |
+        helm version
+        kubectl -n kube-system create sa tiller
+        kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller
+        helm init --service-account tiller
+        kubectl wait --for=condition=Ready pods -n kube-system --all --timeout=5m
+
+    - name: Test Helm 2
+      run: |
+        ./deploy/helm2.sh
+        ./deploy/helm2.sh --uninstall

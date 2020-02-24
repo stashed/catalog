@@ -16,9 +16,8 @@
 
 set -eou pipefail
 
-GOPATH=$(go env GOPATH)
-STASH_ROOT=$GOPATH/src/stash.appscode.dev
-CHART_REPO_ROOT=$GOPATH/src/github.com/appscode/charts
+STASH_ROOT=$(dirname "${BASH_SOURCE[0]}")/..
+CHART_REPO_ROOT=${CHART_REPO_ROOT:-$HOME/go/src/github.com/appscode/charts}
 
 source $STASH_ROOT/catalog/partials/catalogs.sh
 

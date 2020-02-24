@@ -51,6 +51,8 @@ MGO_CATALOG_VERSIONS=(
     4.1.4
     4.1.7
     4.1.13
+    4.2
+    4.2.3
 )
 
 ES_CATALOG_VERSIONS=(

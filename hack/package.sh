@@ -16,10 +16,10 @@
 
 set -eou pipefail
 
-STASH_ROOT=$(dirname "${BASH_SOURCE[0]}")/..
+SCRIPT_ROOT=$(dirname "${BASH_SOURCE[0]}")/..
 CHART_REPO_ROOT=${CHART_REPO_ROOT:-$HOME/go/src/github.com/appscode/charts}
 
-source $STASH_ROOT/catalog/partials/catalogs.sh
+source $SCRIPT_ROOT/partials/catalogs.sh
 
 function package() {
     local catalog="$1"

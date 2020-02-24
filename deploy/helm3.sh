@@ -437,7 +437,7 @@ if [[ $XTRADB_RESTORE_ARGS != "" ]]; then
     HELM_VALUES+=("--set restore.xtradbArgs=$XTRADB_RESTORE_ARGS")
 fi
 # Ensure Helm binary
-ensure_helm "v3.0.2"
+ensure_helm "v3.1.1"
 
 # Add AppsCode chart registry
 $HELM repo add "${APPSCODE_CHART_REGISTRY}" "${APPSCODE_CHART_REGISTRY_URL}"

@@ -7,7 +7,7 @@ echo $(pwd)
 echo $REPO_ROOT
 
 HEADER="#!/bin/bash
-set -xeou pipefail
+set -eou pipefail
 
 # This script has been generated automatically by '/partials/build.sh' script.
 # Don't modify anything here. Make your desired change in the partial scripts.

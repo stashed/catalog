@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -xeou pipefail
+set -eou pipefail
 
 # This script has been generated automatically by '/partials/build.sh' script.
 # Don't modify anything here. Make your desired change in the partial scripts.

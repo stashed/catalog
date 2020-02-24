@@ -74,8 +74,8 @@ jobs:
 
     - name: Install CRDs
       run: |
-        kubectl create --validate=false -f https://github.com/stashed/stash/raw/master/api/crds/stash.appscode.com_functions.yaml
-        kubectl create --validate=false -f https://github.com/stashed/stash/raw/master/api/crds/stash.appscode.com_tasks.yaml
+        kubectl create --validate=false -f https://github.com/stashed/apimachinery/raw/master/api/crds/stash.appscode.com_functions.yaml
+        kubectl create --validate=false -f https://github.com/stashed/apimachinery/raw/master/api/crds/stash.appscode.com_tasks.yaml
         kubectl wait --for=condition=NamesAccepted crds --all --timeout=5m
 
     - name: Test Helm 3

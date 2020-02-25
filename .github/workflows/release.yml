@@ -25,6 +25,11 @@ jobs:
         git config user.name "1gtm"
         git config user.email "1gtm@appscode.com"
 
+    - name: Install Helm 3
+      run: |
+        echo "install helm 3"
+        curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+
     - name: Create pull request
       env:
         GITHUB_TOKEN: ${{ secrets.LGTM_GITHUB_TOKEN }}

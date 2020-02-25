@@ -37,7 +37,7 @@ function package() {
 
     pushd $repo_dir
     echo "========= Packaging helm charts for $repo  ========="
-    git clone "git@github.com:stashed/$repo.git"
+    git clone "https://github.com/stashed/$repo.git"
 
     cd $repo
 

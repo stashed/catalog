@@ -88,11 +88,8 @@ epoch=$(date +%s)
 current_branch=$(git rev-parse --abbrev-ref HEAD)
 new_branch="charts-$epoch"
 
-git add .
 git checkout -b $new_branch
-git commit -s -m "Update Stash addons charts"
+git commit -a -s -m "Update Stash addons charts"
 git push origin $new_branch
 
-# switch to original branch
-git checkout $current_branch
 popd

@@ -55,35 +55,35 @@ for catalog in "${CATALOGS[@]}"; do
             if [[ "${CATALOG_VERSION}" != "" ]]; then
                 catalog_versions=("${CATALOG_VERSION}")
             else
-                catalog_versions=(${PG_CATALOG_VERSIONS[@]})
+                catalog_versions=(${POSTGRES_VERSIONS[@]})
             fi
             ;;
         "stash-mongodb")
             if [[ "${CATALOG_VERSION}" != "" ]]; then
                 catalog_versions=("${CATALOG_VERSION}")
             else
-                catalog_versions=(${MGO_CATALOG_VERSIONS[@]})
+                catalog_versions=(${MONGODB_VERSIONS[@]})
             fi
             ;;
         "stash-elasticsearch")
             if [[ "${CATALOG_VERSION}" != "" ]]; then
                 catalog_versions=("${CATALOG_VERSION}")
             else
-                catalog_versions=(${ES_CATALOG_VERSIONS[@]})
+                catalog_versions=(${ELASTICSEARCH_VERSIONS[@]})
             fi
             ;;
         "stash-mysql")
             if [[ "${CATALOG_VERSION}" != "" ]]; then
                 catalog_versions=("${CATALOG_VERSION}")
             else
-                catalog_versions=(${MY_CATALOG_VERSIONS[@]})
+                catalog_versions=(${MYSQL_VERSIONS[@]})
             fi
             ;;
         "stash-percona-xtradb")
             if [[ "${CATALOG_VERSION}" != "" ]]; then
                 catalog_versions=("${CATALOG_VERSION}")
             else
-                catalog_versions=(${XTRADB_CATALOG_VERSIONS[@]})
+                catalog_versions=(${PERCONA_XTRADB_VERSIONS[@]})
             fi
             ;;
         *)

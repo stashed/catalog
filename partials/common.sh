@@ -98,35 +98,35 @@ function catalog_version_supported() {
 
     case "$catalog_variant" in
         "stash-postgres")
-            if array_contains PG_CATALOG_VERSIONS $version; then
+            if array_contains POSTGRES_VERSIONS $version; then
                 return 0
             else
                 return 1
             fi
             ;;
         "stash-mongodb")
-            if array_contains MGO_CATALOG_VERSIONS $version; then
+            if array_contains MONGODB_VERSIONS $version; then
                 return 0
             else
                 return 1
             fi
             ;;
         "stash-elasticsearch")
-            if array_contains ES_CATALOG_VERSIONS $version; then
+            if array_contains ELASTICSEARCH_VERSIONS $version; then
                 return 0
             else
                 return 1
             fi
             ;;
         "stash-mysql")
-            if array_contains MY_CATALOG_VERSIONS $version; then
+            if array_contains MYSQL_VERSIONS $version; then
                 return 0
             else
                 return 1
             fi
             ;;
         "stash-percona-xtradb")
-            if array_contains XTRADB_CATALOG_VERSIONS $version; then
+            if array_contains PERCONA_XTRADB_VERSIONS $version; then
                 return 0
             else
                 return 1

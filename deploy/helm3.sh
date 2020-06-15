@@ -28,7 +28,7 @@ CATALOGS=(
     stash-percona-xtradb
 )
 
-PG_CATALOG_VERSIONS=(
+POSTGRES_VERSIONS=(
     9.6
     10.2
     10.6
@@ -36,7 +36,7 @@ PG_CATALOG_VERSIONS=(
     11.2
 )
 
-MGO_CATALOG_VERSIONS=(
+MONGODB_VERSIONS=(
     3.4.17
     3.4.22
     3.6.8
@@ -50,7 +50,7 @@ MGO_CATALOG_VERSIONS=(
     4.2.3
 )
 
-ES_CATALOG_VERSIONS=(
+ELASTICSEARCH_VERSIONS=(
     5.6.4
     6.2.4
     6.3.0
@@ -61,13 +61,13 @@ ES_CATALOG_VERSIONS=(
     7.3.2
 )
 
-MY_CATALOG_VERSIONS=(
+MYSQL_VERSIONS=(
     5.7.25
     8.0.3
     8.0.14
 )
 
-XTRADB_CATALOG_VERSIONS=(
+PERCONA_XTRADB_VERSIONS=(
     5.7
 )
 OS=""
@@ -170,35 +170,35 @@ function catalog_version_supported() {
 
     case "$catalog_variant" in
         "stash-postgres")
-            if array_contains PG_CATALOG_VERSIONS $version; then
+            if array_contains POSTGRES_VERSIONS $version; then
                 return 0
             else
                 return 1
             fi
             ;;
         "stash-mongodb")
-            if array_contains MGO_CATALOG_VERSIONS $version; then
+            if array_contains MONGODB_VERSIONS $version; then
                 return 0
             else
                 return 1
             fi
             ;;
         "stash-elasticsearch")
-            if array_contains ES_CATALOG_VERSIONS $version; then
+            if array_contains ELASTICSEARCH_VERSIONS $version; then
                 return 0
             else
                 return 1
             fi
             ;;
         "stash-mysql")
-            if array_contains MY_CATALOG_VERSIONS $version; then
+            if array_contains MYSQL_VERSIONS $version; then
                 return 0
             else
                 return 1
             fi
             ;;
         "stash-percona-xtradb")
-            if array_contains XTRADB_CATALOG_VERSIONS $version; then
+            if array_contains PERCONA_XTRADB_VERSIONS $version; then
                 return 0
             else
                 return 1
@@ -463,35 +463,35 @@ for catalog in "${CATALOGS[@]}"; do
             if [[ "${CATALOG_VERSION}" != "" ]]; then
                 catalog_versions=("${CATALOG_VERSION}")
             else
-                catalog_versions=(${PG_CATALOG_VERSIONS[@]})
+                catalog_versions=(${POSTGRES_VERSIONS[@]})
             fi
             ;;
         "stash-mongodb")
             if [[ "${CATALOG_VERSION}" != "" ]]; then
                 catalog_versions=("${CATALOG_VERSION}")
             else
-                catalog_versions=(${MGO_CATALOG_VERSIONS[@]})
+                catalog_versions=(${MONGODB_VERSIONS[@]})
             fi
             ;;
         "stash-elasticsearch")
             if [[ "${CATALOG_VERSION}" != "" ]]; then
                 catalog_versions=("${CATALOG_VERSION}")
             else
-                catalog_versions=(${ES_CATALOG_VERSIONS[@]})
+                catalog_versions=(${ELASTICSEARCH_VERSIONS[@]})
             fi
             ;;
         "stash-mysql")
             if [[ "${CATALOG_VERSION}" != "" ]]; then
                 catalog_versions=("${CATALOG_VERSION}")
             else
-                catalog_versions=(${MY_CATALOG_VERSIONS[@]})
+                catalog_versions=(${MYSQL_VERSIONS[@]})
             fi
             ;;
         "stash-percona-xtradb")
             if [[ "${CATALOG_VERSION}" != "" ]]; then
                 catalog_versions=("${CATALOG_VERSION}")
             else
-                catalog_versions=(${XTRADB_CATALOG_VERSIONS[@]})
+                catalog_versions=(${PERCONA_XTRADB_VERSIONS[@]})
             fi
             ;;
         *)

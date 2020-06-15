@@ -57,19 +57,19 @@ catalog_versions=()
 for catalog in "${CATALOGS[@]}"; do
     case "${catalog}" in
         "stash-postgres")
-            catalog_versions=(${PG_CATALOG_VERSIONS[@]})
+            catalog_versions=(${POSTGRES_VERSIONS[@]})
             ;;
         "stash-mongodb")
-            catalog_versions=(${MGO_CATALOG_VERSIONS[@]})
+            catalog_versions=(${MONGODB_VERSIONS[@]})
             ;;
         "stash-elasticsearch")
-            catalog_versions=(${ES_CATALOG_VERSIONS[@]})
+            catalog_versions=(${ELASTICSEARCH_VERSIONS[@]})
             ;;
         "stash-mysql")
-            catalog_versions=(${MY_CATALOG_VERSIONS[@]})
+            catalog_versions=(${MYSQL_VERSIONS[@]})
             ;;
         "stash-percona-xtradb")
-            catalog_versions=(${XTRADB_CATALOG_VERSIONS[@]})
+            catalog_versions=(${PERCONA_XTRADB_VERSIONS[@]})
             ;;
         *)
             echo "Unrecognized catalog: ${catalog}"

@@ -96,10 +96,10 @@ DOCKER_REPO_ROOT := /go/src/$(GO_PKG)/$(REPO)
 
 .PHONY: gen
 gen:
-	render-gotpl --template=hack/templates/readme.txt --data=hack/release/catalog.json > README.md
-	render-gotpl --template=hack/templates/catalogs.txt --data=hack/release/catalog.json > partials/catalogs.sh
-	./partials/build.sh
-	@$(MAKE) add-license --no-print-directory
+	render-gotpl --template=templates/readme.txt --data=catalog.json > README.md
+	render-gotpl --template=helm3.sh --pattern=templates/* --data=catalog.json > deploy/helm3.sh
+	render-gotpl --template=helm2.sh --pattern=templates/* --data=catalog.json > deploy/helm2.sh
+	render-gotpl --template=script.sh --pattern=templates/* --data=catalog.json > deploy/script.sh
 
 fmt: $(BUILD_DIRS)
 	@docker run                                                 \
@@ -145,7 +145,7 @@ add-license:
 		--env HTTP_PROXY=$(HTTP_PROXY)                   \
 		--env HTTPS_PROXY=$(HTTPS_PROXY)                 \
 		$(BUILD_IMAGE)                                   \
-		ltag -t "./hack/license" --excludes "vendor contrib partials" -v
+		ltag -t "./hack/license" --excludes "vendor contrib" -v
 
 .PHONY: check-license
 check-license:
@@ -158,7 +158,7 @@ check-license:
 		--env HTTP_PROXY=$(HTTP_PROXY)                   \
 		--env HTTPS_PROXY=$(HTTPS_PROXY)                 \
 		$(BUILD_IMAGE)                                   \
-		ltag -t "./hack/license" --excludes "vendor contrib partials" --check -v
+		ltag -t "./hack/license" --excludes "vendor contrib" --check -v
 
 .PHONY: ci
 ci: verify check-license

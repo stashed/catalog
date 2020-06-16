@@ -96,6 +96,8 @@ DOCKER_REPO_ROOT := /go/src/$(GO_PKG)/$(REPO)
 
 .PHONY: gen
 gen:
+	render-gotpl --template=hack/templates/readme.txt --data=hack/release/catalog.json > README.md
+	render-gotpl --template=hack/templates/catalogs.txt --data=hack/release/catalog.json > partials/catalogs.sh
 	./partials/build.sh
 	@$(MAKE) add-license --no-print-directory
 

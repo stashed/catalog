@@ -22,5 +22,5 @@ set -eou pipefail
 # Make your desired changes in the files in the templates directory and run `make gen fmt`.
 
 {{ template "catalogs.tpl" . }}
-{{ template "common.tpl" }}
-{{ template "helm3.tpl" }}
+{{ template "common.tpl" . }}
+{{ template "helm3.tpl" . }}

@@ -30,46 +30,46 @@ CATALOGS=(
 )
 
 ELASTICSEARCH_VERSIONS=(
-    5.6.4
-    6.2.4
-    6.3.0
-    6.4.0
-    6.5.3
-    6.8.0
-    7.2.0
-    7.3.2
+    5.6.4-beta.20200708
+    6.2.4-beta.20200708
+    6.3.0-beta.20200708
+    6.4.0-beta.20200708
+    6.5.3-beta.20200708
+    6.8.0-beta.20200708
+    7.2.0-beta.20200708
+    7.3.2-beta.20200708
 )
 
 MONGODB_VERSIONS=(
-    3.4.17
-    3.4.22
-    3.6.8
-    3.6.13
-    4.0.3
-    4.0.5
-    4.0.11
-    4.1.4
-    4.1.7
-    4.1.13
-    4.2.3
+    3.4.1-beta.20200708
+    3.4.2-beta.20200708
+    3.6.1-beta.20200708
+    3.6.8-beta.20200708
+    4.0.1-beta.20200708
+    4.0.3-beta.20200708
+    4.0.5-beta.20200708
+    4.1.1-beta.20200708
+    4.1.4-beta.20200708
+    4.1.7-beta.20200708
+    4.2.3-beta.20200708
 )
 
 MYSQL_VERSIONS=(
-    5.7.25
-    8.0.3
-    8.0.14
+    5.7.25-beta.20200708
+    8.0.3-beta.20200708
+    8.0.14-beta.20200708
 )
 
 PERCONA_XTRADB_VERSIONS=(
-    5.7
+    5.7-beta.20200708
 )
 
 POSTGRES_VERSIONS=(
-    9.6
-    10.2
-    10.6
-    11.1
-    11.2
+    9.6-beta.20200708
+    10.2-beta.20200708
+    10.6-beta.20200708
+    11.1-beta.20200708
+    11.2-beta.20200708
 )
 
 OS=""
@@ -87,7 +87,7 @@ CATALOG_VERSION=""
 
 APPSCODE_ENV=${APPSCODE_ENV:-prod}
 APPSCODE_CHART_REGISTRY=${APPSCODE_CHART_REGISTRY:-"appscode"}
-APPSCODE_CHART_REGISTRY_URL=${APPSCODE_CHART_REGISTRY_URL:-"https://charts.appscode.com/stable"}
+APPSCODE_CHART_REGISTRY_URL=${APPSCODE_CHART_REGISTRY_URL:-"https://charts.appscode.com/testing"}
 
 DOCKER_REGISTRY=${REGISTRY:-stashed}
 DOCKER_IMAGE=""

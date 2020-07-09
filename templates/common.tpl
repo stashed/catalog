@@ -12,7 +12,7 @@ CATALOG_VARIANT="all"
 CATALOG_VERSION=""
 
 APPSCODE_ENV=${APPSCODE_ENV:-prod}
-APPSCODE_CHART_REGISTRY=${APPSCODE_CHART_REGISTRY:-"appscode"}
+APPSCODE_CHART_REGISTRY=${APPSCODE_CHART_REGISTRY:-"{{ default "appscode" .chart_registry }}"}
 APPSCODE_CHART_REGISTRY_URL=${APPSCODE_CHART_REGISTRY_URL:-"{{ default "https://charts.appscode.com/stable" .chart_registry_url }}"}
 
 DOCKER_REGISTRY=${REGISTRY:-stashed}

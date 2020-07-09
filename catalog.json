@@ -1,4 +1,5 @@
 {
+  "chart_registry": "appscode-testing",
   "chart_registry_url": "https://charts.appscode.com/testing",
   "addons": [
     {

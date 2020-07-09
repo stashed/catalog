@@ -76,13 +76,12 @@ BUILD_DIRS  := bin/$(OS)_$(ARCH)     \
 # If you want to build all binaries, see the 'all-build' rule.
 # If you want to build all containers, see the 'all-container' rule.
 # If you want to build AND push all containers, see the 'all-push' rule.
-all: fmt build
+all: build fmt
 
 # For the following OS/ARCH expansions, we transform OS/ARCH into OS_ARCH
 # because make pattern rules don't match with embedded '/' characters.
 
-build:
-	./partials/build.sh
+build: gen
 	@$(MAKE) add-license --no-print-directory
 
 version:

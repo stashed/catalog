@@ -30,46 +30,46 @@ CATALOGS=(
 )
 
 ELASTICSEARCH_VERSIONS=(
-    5.6.4-beta.20200709
-    6.2.4-beta.20200709
-    6.3.0-beta.20200709
-    6.4.0-beta.20200709
-    6.5.3-beta.20200709
-    6.8.0-beta.20200709
-    7.2.0-beta.20200709
-    7.3.2-beta.20200709
+    5.6.4-beta.20200826
+    6.2.4-beta.20200826
+    6.3.0-beta.20200826
+    6.4.0-beta.20200826
+    6.5.3-beta.20200826
+    6.8.0-beta.20200826
+    7.2.0-beta.20200826
+    7.3.2-beta.20200826
 )
 
 MONGODB_VERSIONS=(
-    3.4.1-beta.20200709
-    3.4.2-beta.20200709
-    3.6.1-beta.20200709
-    3.6.8-beta.20200709
-    4.0.1-beta.20200709
-    4.0.3-beta.20200709
-    4.0.5-beta.20200709
-    4.1.1-beta.20200709
-    4.1.4-beta.20200709
-    4.1.7-beta.20200709
-    4.2.3-beta.20200709
+    3.4.1-beta.20200826
+    3.4.2-beta.20200826
+    3.6.1-beta.20200826
+    3.6.8-beta.20200826
+    4.0.1-beta.20200826
+    4.0.3-beta.20200826
+    4.0.5-beta.20200826
+    4.1.1-beta.20200826
+    4.1.4-beta.20200826
+    4.1.7-beta.20200826
+    4.2.3-beta.20200826
 )
 
 MYSQL_VERSIONS=(
-    5.7.25-beta.20200709
-    8.0.3-beta.20200709
-    8.0.14-beta.20200709
+    5.7.25-beta.20200826
+    8.0.3-beta.20200826
+    8.0.14-beta.20200826
 )
 
 PERCONA_XTRADB_VERSIONS=(
-    5.7-beta.20200709
+    5.7-beta.20200826
 )
 
 POSTGRES_VERSIONS=(
-    9.6-beta.20200709
-    10.2-beta.20200709
-    10.6-beta.20200709
-    11.1-beta.20200709
-    11.2-beta.20200709
+    9.6-beta.20200826
+    10.2-beta.20200826
+    10.6-beta.20200826
+    11.1-beta.20200826
+    11.2-beta.20200826
 )
 
 OS=""
@@ -86,8 +86,8 @@ CATALOG_VARIANT="all"
 CATALOG_VERSION=""
 
 APPSCODE_ENV=${APPSCODE_ENV:-prod}
-APPSCODE_CHART_REGISTRY=${APPSCODE_CHART_REGISTRY:-"appscode-testing"}
-APPSCODE_CHART_REGISTRY_URL=${APPSCODE_CHART_REGISTRY_URL:-"https://charts.appscode.com/testing"}
+APPSCODE_CHART_REGISTRY=${APPSCODE_CHART_REGISTRY:-"appscode"}
+APPSCODE_CHART_REGISTRY_URL=${APPSCODE_CHART_REGISTRY_URL:-"https://charts.appscode.com/stable/"}
 
 DOCKER_REGISTRY=${REGISTRY:-stashed}
 DOCKER_IMAGE=""

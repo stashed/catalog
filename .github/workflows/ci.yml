@@ -63,14 +63,25 @@ jobs:
           kubectl create --validate=false -f https://github.com/stashed/apimachinery/raw/master/crds/stash.appscode.com_tasks.yaml
           kubectl wait --for=condition=NamesAccepted crds --all --timeout=5m
 
+      - name: Setup Helm 3
+        run: |
+          # Avoid v3.3.3 due to https://github.com/helm/helm/commit/520416adf0723321101235780f86245c3a714c3c
+          curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+
       - name: Test Helm 3
         run: |
+          helm version || true
+          echo "install catalog"
           ./deploy/helm3.sh
+          echo "uninstall catalog"
           ./deploy/helm3.sh --uninstall
 
       - name: Test script installer
         run: |
+          helm version || true
+          echo "install catalog"
           ./deploy/script.sh
+          echo "uninstall catalog"
           ./deploy/script.sh --uninstall
 
       - name: Setup Helm 2
@@ -83,5 +94,8 @@ jobs:
 
       - name: Test Helm 2
         run: |
+          helm version || true
+          echo "install catalog"
           ./deploy/helm2.sh
+          echo "uninstall catalog"
           ./deploy/helm2.sh --uninstall

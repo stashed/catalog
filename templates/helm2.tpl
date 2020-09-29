@@ -1,5 +1,5 @@
 # Ensure Helm binary
-ensure_helm "v2.16.1"
+ensure_helm "v2.16.12"
 $HELM init --client-only
 
 # Add AppsCode chart registry

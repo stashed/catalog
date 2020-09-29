@@ -41,14 +41,14 @@ ELASTICSEARCH_VERSIONS=(
 MONGODB_VERSIONS=(
     3.4.17-v2
     3.4.22-v2
-    3.6.13-v2
     3.6.8-v2
+    3.6.13-v2
     4.0.3-v2
     4.0.5-v2
     4.0.11-v2
-    4.1.13-v2
     4.1.4-v2
     4.1.7-v2
+    4.1.13-v2
     4.2.3-v2
 )
 
@@ -425,7 +425,7 @@ if [[ $XTRADB_RESTORE_ARGS != "" ]]; then
 fi
 
 # Ensure Helm binary
-ensure_helm "v2.16.1"
+ensure_helm "v2.16.12"
 $HELM init --client-only
 
 # Add AppsCode chart registry

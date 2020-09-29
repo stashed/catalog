@@ -41,14 +41,14 @@ ELASTICSEARCH_VERSIONS=(
 MONGODB_VERSIONS=(
     3.4.17-v2
     3.4.22-v2
-    3.6.13-v2
     3.6.8-v2
+    3.6.13-v2
     4.0.3-v2
     4.0.5-v2
     4.0.11-v2
-    4.1.13-v2
     4.1.4-v2
     4.1.7-v2
+    4.1.13-v2
     4.2.3-v2
 )
 
@@ -429,7 +429,7 @@ TEMP_CHART_DIR="$(mktemp -dt appscode-XXXXXX)"
 TEMP_DIRS+=(${TEMP_CHART_DIR})
 
 # Ensure Helm binary
-ensure_helm "v3.1.1"
+ensure_helm "v3.3.4"
 
 # Add AppsCode chart registry
 $HELM repo add "${APPSCODE_CHART_REGISTRY}" "${APPSCODE_CHART_REGISTRY_URL}"

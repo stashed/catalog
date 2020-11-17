@@ -59,14 +59,15 @@ MYSQL_VERSIONS=(
 )
 
 PERCONA_XTRADB_VERSIONS=(
-    5.7-v4
+    5.7.0
 )
 
 POSTGRES_VERSIONS=(
-    9.6.19-v2
-    10.14.0-v2
-    11.9.0-v2
-    12.4.0-v2
+    9.6.19-v3
+    10.14.0-v3
+    11.9.0-v3
+    12.4.0-v3
+    13.1.0
 )
 
 OS=""

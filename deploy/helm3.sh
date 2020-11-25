@@ -28,7 +28,6 @@ CATALOGS=(
     stash-postgres
 )
 
-
 ELASTICSEARCH_VERSIONS=(
     5.6.4-v4
     6.2.4-v4
@@ -448,4 +447,3 @@ for catalog in "${CATALOGS[@]}"; do
     # install/uninstall this catalog
     handle_catalog "${catalog}" catalog_versions
 done
-

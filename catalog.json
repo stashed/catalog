@@ -40,6 +40,12 @@
       ]
     },
     {
+      "name": "mariadb",
+      "versions": [
+        "10.5.8"
+      ]
+    },
+    {
       "name": "percona-xtradb",
       "versions": [
         "5.7.0"

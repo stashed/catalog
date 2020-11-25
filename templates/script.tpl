@@ -79,6 +79,13 @@ for catalog in "${CATALOGS[@]}"; do
                 catalog_versions=(${MYSQL_VERSIONS[@]})
             fi
             ;;
+        "stash-mariadb")
+            if [[ "${CATALOG_VERSION}" != "" ]]; then
+                catalog_versions=("${CATALOG_VERSION}")
+            else
+                catalog_versions=(${MARIADB_VERSIONS[@]})
+            fi
+            ;;
         "stash-percona-xtradb")
             if [[ "${CATALOG_VERSION}" != "" ]]; then
                 catalog_versions=("${CATALOG_VERSION}")

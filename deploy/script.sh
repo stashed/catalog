@@ -21,58 +21,58 @@ set -eou pipefail
 
 CATALOGS=(
     stash-elasticsearch
+    stash-mariadb
     stash-mongodb
     stash-mysql
-    stash-mariadb
     stash-percona-xtradb
     stash-postgres
 )
 
 ELASTICSEARCH_VERSIONS=(
-    5.6.4-v4
-    6.2.4-v4
-    6.3.0-v4
-    6.4.0-v4
-    6.5.3-v4
-    6.8.0-v4
-    7.2.0-v4
-    7.3.2-v4
-)
-
-MONGODB_VERSIONS=(
-    3.4.17-v4
-    3.4.22-v4
-    3.6.8-v4
-    3.6.13-v4
-    4.0.3-v4
-    4.0.5-v4
-    4.0.11-v4
-    4.1.4-v4
-    4.1.7-v4
-    4.1.13-v4
-    4.2.3-v4
-)
-
-MYSQL_VERSIONS=(
-    5.7.25-v4
-    8.0.3-v4
-    8.0.14-v4
+    5.6.4-v5
+    6.2.4-v5
+    6.3.0-v5
+    6.4.0-v5
+    6.5.3-v5
+    6.8.0-v5
+    7.2.0-v5
+    7.3.2-v5
 )
 
 MARIADB_VERSIONS=(
     10.5.8
 )
 
+MONGODB_VERSIONS=(
+    3.4.17-v5
+    3.4.22-v5
+    3.6.8-v5
+    3.6.13-v5
+    4.0.3-v5
+    4.0.5-v5
+    4.0.11-v5
+    4.1.4-v5
+    4.1.7-v5
+    4.1.13-v5
+    4.2.3-v5
+)
+
+MYSQL_VERSIONS=(
+    5.7.25-v5
+    8.0.3-v5
+    8.0.14-v5
+)
+
 PERCONA_XTRADB_VERSIONS=(
-    5.7.0
+    5.7.0-v1
 )
 
 POSTGRES_VERSIONS=(
-    9.6.19-v3
-    10.14.0-v3
-    11.9.0-v3
-    12.4.0-v3
-    13.1.0
+    9.6.19-v4
+    10.14.0-v4
+    11.9.0-v4
+    12.4.0-v4
+    13.1.0-v1
 )
 
 OS=""

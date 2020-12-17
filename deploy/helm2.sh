@@ -23,6 +23,7 @@ CATALOGS=(
     stash-elasticsearch
     stash-mongodb
     stash-mysql
+    stash-mariadb
     stash-percona-xtradb
     stash-postgres
 )
@@ -58,6 +59,10 @@ MYSQL_VERSIONS=(
     8.0.14-v4
 )
 
+MARIADB_VERSIONS=(
+    10.5.8
+)
+
 PERCONA_XTRADB_VERSIONS=(
     5.7.0
 )
@@ -91,16 +96,8 @@ DOCKER_REGISTRY=${REGISTRY:-stashed}
 DOCKER_IMAGE=""
 DOCKER_TAG=""
 
-PG_BACKUP_ARGS=""
-PG_RESTORE_ARGS=""
-MGO_BACKUP_ARGS=""
-MGO_RESTORE_ARGS=""
-ES_BACKUP_ARGS=""
-ES_RESTORE_ARGS=""
-MY_BACKUP_ARGS=""
-MY_RESTORE_ARGS=""
-XTRADB_BACKUP_ARGS=""
-XTRADB_RESTORE_ARGS=""
+BACKUP_ARGS=""
+RESTORE_ARGS=""
 
 UNINSTALL=0
 
@@ -197,6 +194,13 @@ function catalog_version_supported() {
                 return 1
             fi
             ;;
+        "stash-mariadb")
+            if array_contains MARIADB_VERSIONS $version; then
+                return 0
+            else
+                return 1
+            fi
+            ;;
         "stash-percona-xtradb")
             if array_contains PERCONA_XTRADB_VERSIONS $version; then
                 return 0
@@ -218,23 +222,15 @@ show_help() {
     echo "setup.sh [options]"
     echo " "
     echo "options:"
-    echo "-h, --help                             show brief help"
-    echo "    --catalog                          specify a specific catalog variant to install."
-    echo "    --version                          specify a specific version of a specific catalog to install. use it along with '--catalog' flag."
-    echo "    --docker-registry                  specify the docker registry to use to pull respective catalog images. default value: 'stashed'.   "
-    echo "    --image                            specify the name of the docker image to use for respective catalogs."
-    echo "    --image-tag                        specify the tag of the docker image to use for respective catalog."
-    echo "    --pg-backup-args                   specify optional arguments to pass to 'pgdump' command during backup."
-    echo "    --pg-restore-args                  specify optional arguments to pass to 'psql' command during  restore."
-    echo "    --mg-backup-args                   specify optional arguments to pass to 'mongodump' command during backup."
-    echo "    --mg-restore-args                  specify optional arguments to pass to 'mongorestore' command during  restore."
-    echo "    --es-backup-args                   specify optional arguments to pass to 'multielasticdump' command during backup."
-    echo "    --es-restore-args                  specify optional arguments to pass to 'multielasticdump' command during  restore."
-    echo "    --my-backup-args                   specify optional arguments to pass to 'mysqldump' command during backup."
-    echo "    --my-restore-args                  specify optional arguments to pass to 'mysql' command during  restore."
-    echo "    --xtradb-backup-args               specify optional arguments to pass to 'xtrabackup' command during backup."
-    echo "    --xtradb-restore-args              specify optional arguments to pass to 'xtrabackup' command during  restore."
-    echo "    --uninstall                        uninstall specific or all catalogs."
+    echo "-h, --help                          show brief help"
+    echo "    --catalog                       specify a specific catalog variant to install."
+    echo "    --version                       specify a specific version of a specific catalog to install. use it along with '--catalog' flag."
+    echo "    --docker-registry               specify the docker registry to use to pull respective catalog images. default value: 'stashed'.   "
+    echo "    --image                         specify the name of the docker image to use for respective catalogs."
+    echo "    --image-tag                     specify the tag of the docker image to use for respective catalog."
+    echo "    --backup-args                   specify optional arguments to pass to the respective backup command."
+    echo "    --restore-args                  specify optional arguments to pass to the respective restore command"
+    echo "    --uninstall                     uninstall specific or all catalogs."
 }
 
 while test $# -gt 0; do
@@ -265,44 +261,12 @@ while test $# -gt 0; do
             DOCKER_IMAGE=$(echo $1 | sed -e 's/^[^=]*=//g')
             shift
             ;;
-        --pg-backup-args*)
-            PG_BACKUP_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
+        --backup-args*)
+            BACKUP_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
             shift
             ;;
-        --pg-restore-args*)
-            PG_RESTORE_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
-            shift
-            ;;
-        --mg-backup-args*)
-            MGO_BACKUP_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
-            shift
-            ;;
-        --mg-restore-args*)
-            MGO_RESTORE_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
-            shift
-            ;;
-        --es-backup-args*)
-            ES_BACKUP_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
-            shift
-            ;;
-        --es-restore-args*)
-            ES_RESTORE_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
-            shift
-            ;;
-        --my-backup-args*)
-            MY_BACKUP_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
-            shift
-            ;;
-        --my-restore-args*)
-            MY_RESTORE_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
-            shift
-            ;;
-        --xtradb-backup-args*)
-            XTRADB_BACKUP_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
-            shift
-            ;;
-        --xtradb-restore-args*)
-            XTRADB_RESTORE_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
+        --restore-args*)
+            RESTORE_ARGS=$(echo $1 | sed -e 's/^[^=]*=//g')
             shift
             ;;
         --uninstall*)
@@ -390,39 +354,11 @@ if [[ $DOCKER_TAG != "" ]]; then
 fi
 
 # ========== catalog specific values =================
-if [[ $PG_BACKUP_ARGS != "" ]]; then
-    HELM_VALUES+=("--set backup.pgArgs=$PG_BACKUP_ARGS")
+if [[ $BACKUP_ARGS != "" ]]; then
+    HELM_VALUES+=("--set backup.args=$BACKUP_ARGS")
 fi
-if [[ $PG_RESTORE_ARGS != "" ]]; then
-    HELM_VALUES+=("--set restore.pgArgs=$PG_RESTORE_ARGS")
-fi
-
-if [[ $MGO_BACKUP_ARGS != "" ]]; then
-    HELM_VALUES+=("--set backup.mgArgs=$MGO_BACKUP_ARGS")
-fi
-if [[ $MGO_RESTORE_ARGS != "" ]]; then
-    HELM_VALUES+=("--set restore.mgArgs=$MGO_RESTORE_ARGS")
-fi
-
-if [[ $ES_BACKUP_ARGS != "" ]]; then
-    HELM_VALUES+=("--set backup.esArgs=$ES_BACKUP_ARGS")
-fi
-if [[ $ES_RESTORE_ARGS != "" ]]; then
-    HELM_VALUES+=("--set restore.esArgs=$ES_RESTORE_ARGS")
-fi
-
-if [[ $MY_BACKUP_ARGS != "" ]]; then
-    HELM_VALUES+=("--set backup.myArgs=$MY_BACKUP_ARGS")
-fi
-if [[ $MY_RESTORE_ARGS != "" ]]; then
-    HELM_VALUES+=("--set restore.myArgs=$MY_RESTORE_ARGS")
-fi
-
-if [[ $XTRADB_BACKUP_ARGS != "" ]]; then
-    HELM_VALUES+=("--set backup.xtradbArgs=$XTRADB_BACKUP_ARGS")
-fi
-if [[ $XTRADB_RESTORE_ARGS != "" ]]; then
-    HELM_VALUES+=("--set restore.xtradbArgs=$XTRADB_RESTORE_ARGS")
+if [[ $RESTORE_ARGS != "" ]]; then
+    HELM_VALUES+=("--set restore.args=$RESTORE_ARGS")
 fi
 
 # Ensure Helm binary
@@ -487,6 +423,13 @@ for catalog in "${CATALOGS[@]}"; do
                 catalog_versions=("${CATALOG_VERSION}")
             else
                 catalog_versions=(${MYSQL_VERSIONS[@]})
+            fi
+            ;;
+        "stash-mariadb")
+            if [[ "${CATALOG_VERSION}" != "" ]]; then
+                catalog_versions=("${CATALOG_VERSION}")
+            else
+                catalog_versions=(${MARIADB_VERSIONS[@]})
             fi
             ;;
         "stash-percona-xtradb")

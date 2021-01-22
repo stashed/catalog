@@ -29,14 +29,14 @@ CATALOGS=(
 )
 
 ELASTICSEARCH_VERSIONS=(
-    5.6.4-v5
-    6.2.4-v5
-    6.3.0-v5
-    6.4.0-v5
-    6.5.3-v5
-    6.8.0-v5
-    7.2.0-v5
-    7.3.2-v5
+    5.6.4-v6
+    6.2.4-v6
+    6.3.0-v6
+    6.4.0-v6
+    6.5.3-v6
+    6.8.0-v6
+    7.2.0-v6
+    7.3.2-v6
 )
 
 MARIADB_VERSIONS=(
@@ -58,9 +58,10 @@ MONGODB_VERSIONS=(
 )
 
 MYSQL_VERSIONS=(
-    5.7.25-v5
-    8.0.3-v5
-    8.0.14-v5
+    5.7.25-v6
+    8.0.3-v6
+    8.0.14-v6
+    8.0.21
 )
 
 PERCONA_XTRADB_VERSIONS=(
@@ -362,7 +363,7 @@ if [[ $RESTORE_ARGS != "" ]]; then
 fi
 
 # Ensure Helm binary
-ensure_helm "v2.16.12"
+ensure_helm "v2.17.0"
 $HELM init --client-only
 
 # Add AppsCode chart registry

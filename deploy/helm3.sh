@@ -104,7 +104,8 @@ UNINSTALL=0
 
 function cleanup() {
     # remove temporary directories
-    for dir in "${TEMP_DIRS[@]}"; do
+    # ref: https://gist.github.com/dimo414/2fb052d230654cc0c25e9e41a9651ebe
+    for dir in ${TEMP_DIRS[@]+"${TEMP_DIRS[@]}"}; do
         rm -rf "${dir}"
     done
 }
@@ -363,7 +364,7 @@ if [[ $RESTORE_ARGS != "" ]]; then
 fi
 
 # Ensure Helm binary
-ensure_helm "v3.3.4"
+ensure_helm "v3.5.1"
 
 # Add AppsCode chart registry
 $HELM repo add "${APPSCODE_CHART_REGISTRY}" "${APPSCODE_CHART_REGISTRY_URL}"
@@ -383,7 +384,9 @@ function uninstall_catalog() {
 
 function handle_catalog() {
     local catalog="$1"
-    local -n versions="$2"
+    # ref: https://askubuntu.com/a/995110
+    shift
+    local versions=("$@")
 
     for version in "${versions[@]}"; do
         if [[ "${UNINSTALL}" == "1" ]]; then
@@ -446,5 +449,5 @@ for catalog in "${CATALOGS[@]}"; do
     esac
 
     # install/uninstall this catalog
-    handle_catalog "${catalog}" catalog_versions
+    handle_catalog "${catalog}" "${catalog_versions[@]}"
 done

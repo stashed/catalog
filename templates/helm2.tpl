@@ -20,7 +20,9 @@ function uninstall_catalog() {
 
 function handle_catalog() {
     local catalog="$1"
-    local -n versions="$2"
+    # ref: https://askubuntu.com/a/995110
+    shift
+    local versions=("$@")
 
     for version in "${versions[@]}"; do
         if [[ "${UNINSTALL}" == "1" ]]; then
@@ -83,5 +85,5 @@ for catalog in "${CATALOGS[@]}"; do
     esac
 
     # install/uninstall this catalog
-    handle_catalog "${catalog}" catalog_versions
+    handle_catalog "${catalog}" "${catalog_versions[@]}"
 done

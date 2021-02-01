@@ -104,7 +104,8 @@ UNINSTALL=0
 
 function cleanup() {
     # remove temporary directories
-    for dir in "${TEMP_DIRS[@]}"; do
+    # ref: https://gist.github.com/dimo414/2fb052d230654cc0c25e9e41a9651ebe
+    for dir in ${TEMP_DIRS[@]+"${TEMP_DIRS[@]}"}; do
         rm -rf "${dir}"
     done
 }

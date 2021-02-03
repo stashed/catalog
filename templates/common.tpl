@@ -266,15 +266,15 @@ function ensure_helm() {
 # generate values flags with provided input
 # ========== common values =================
 if [[ $DOCKER_REGISTRY != "" ]]; then
-    HELM_VALUES+=("--set docker.registry=$DOCKER_REGISTRY")
+    HELM_VALUES+=("--set image.registry=$DOCKER_REGISTRY")
 fi
 
 if [[ $DOCKER_IMAGE != "" ]]; then
-    HELM_VALUES+=("--set docker.image=$DOCKER_IMAGE")
+    HELM_VALUES+=("--set image.repository=$DOCKER_IMAGE")
 fi
 
 if [[ $DOCKER_TAG != "" ]]; then
-    HELM_VALUES+=("--set docker.tag=$DOCKER_TAG")
+    HELM_VALUES+=("--set image.tag=$DOCKER_TAG")
 fi
 
 # ========== catalog specific values =================

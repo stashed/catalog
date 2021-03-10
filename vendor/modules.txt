@@ -1,5 +1,5 @@
 # github.com/Masterminds/semver v1.5.0
 github.com/Masterminds/semver
-# gomodules.xyz/semvers v0.0.0-20210303214013-a7245da66f4f
+# gomodules.xyz/semvers v0.0.0-20210310134147-b22f1a8bc683
 ## explicit
 gomodules.xyz/semvers
